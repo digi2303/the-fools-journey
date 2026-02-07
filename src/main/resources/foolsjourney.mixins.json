@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.digi.foolsjourney.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"BeyonderMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

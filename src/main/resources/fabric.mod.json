@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "foolsjourney",
+	"version": "${version}",
+	"name": "The Fool's Journey",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/foolsjourney/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.digi.foolsjourney.TheFoolsJourney"
+		],
+		"client": [
+			"com.digi.foolsjourney.TheFoolsJourneyClient"
+		],
+		"fabric-datagen": [
+			"com.digi.foolsjourney.TheFoolsJourneyDataGenerator"
+		]
+	},
+	"mixins": [
+		"foolsjourney.mixins.json",
+		{
+			"config": "foolsjourney.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
