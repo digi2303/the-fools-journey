@@ -14,7 +14,18 @@ public class ModMessages {
                 if (context.player() instanceof IBeyonder beyonder) {
 
                     if (beyonder.getSequence() == -1) {
-                        context.player().sendMessage(Text.of("§c[Error] You are not a Beyonder yet!"), true);
+                        context.player().sendMessage(Text.of("§c[Error] Not a Beyonder!"), true);
+                        return;
+                    }
+
+                    if (beyonder.getCooldown() > 0) {
+                        long secondsLeft = (long) Math.ceil(beyonder.getCooldown() / 20.0);
+                        context.player().sendMessage(Text.of("§c[LotM] Cooldown! Wait " + secondsLeft + "s..."), true);
+                        return;
+                    }
+
+                    if (!beyonder.isSpiritVisionActive() && beyonder.getSpirituality() < 1.0) {
+                        context.player().sendMessage(Text.of("§c[LotM] Not enough spirituality to activate!"), true);
                         return;
                     }
 

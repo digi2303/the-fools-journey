@@ -9,4 +9,7 @@ public interface IBeyonder {
 
     boolean isSpiritVisionActive();
     void setSpiritVision(boolean active);
+
+    int getCooldown();
+    void setCooldown(int ticks);
 }
