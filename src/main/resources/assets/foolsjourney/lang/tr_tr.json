@@ -25,5 +25,8 @@
   "advancement.foolsjourney.root.title": "Aptal'ın Yolculuğu",
   "advancement.foolsjourney.root.desc": "Görücü İksiri'ni için ve kaderin iplerini tutmaya başlayın.",
   "advancement.foolsjourney.pendulum.title": "Ruh Çubukçusu",
-  "advancement.foolsjourney.pendulum.desc": "Bir Ruh Sarkacı üretin ve görünmeyeni bulun."
+  "advancement.foolsjourney.pendulum.desc": "Bir Ruh Sarkacı üretin ve görünmeyeni bulun.",
+
+  "message.foolsjourney.acting_progress": "İksir Sindiriliyor... [%%%s]",
+  "message.foolsjourney.digestion_complete": "İksir tamamen sindirildi! Kader seni bir sonraki adıma çağırıyor."
 }

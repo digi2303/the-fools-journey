@@ -39,8 +39,10 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
     @Unique private double foolsjourney$spirituality = 0;
     @Unique private boolean foolsjourney$spiritVisionActive = false;
     @Unique private int foolsjourney$abilityCooldown = 0;
-    @Unique private long foolsjourney$lastDangerWarningTime = 0;
 
+    @Unique private double foolsjourney$digestion = 0.0;
+
+    @Unique private long foolsjourney$lastDangerWarningTime = 0;
     @Unique private final Set<UUID> foolsjourney$knownThreats = new HashSet<>();
 
     @SuppressWarnings("AddedMixinMembers")
@@ -53,45 +55,51 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                     this.foolsjourney$sequence,
                     this.foolsjourney$spirituality,
                     this.foolsjourney$spiritVisionActive,
-                    this.foolsjourney$abilityCooldown
+                    this.foolsjourney$abilityCooldown,
+                    this.foolsjourney$digestion // YENİ: Pakete eklendi
             ));
         }
     }
 
+    // ... (Diğer getter/setterlar aynı) ...
     @Override public int getSequence() { return this.foolsjourney$sequence; }
-
-    @Override
-    public void setSequence(int sequence) {
-        this.foolsjourney$sequence = sequence;
-        syncBeyonderData();
-    }
-
+    @Override public void setSequence(int sequence) { this.foolsjourney$sequence = sequence; syncBeyonderData(); }
     @Override public double getSpirituality() { return this.foolsjourney$spirituality; }
-
-    @Override
-    public void setSpirituality(double spirituality) {
-        this.foolsjourney$spirituality = spirituality;
-        syncBeyonderData();
-    }
-
+    @Override public void setSpirituality(double spirituality) { this.foolsjourney$spirituality = spirituality; syncBeyonderData(); }
     @Override public boolean isSpiritVisionActive() { return this.foolsjourney$spiritVisionActive; }
-
-    @Override
-    public void setSpiritVision(boolean active) {
-        this.foolsjourney$spiritVisionActive = active;
-        syncBeyonderData();
-    }
-
+    @Override public void setSpiritVision(boolean active) { this.foolsjourney$spiritVisionActive = active; syncBeyonderData(); }
     @Override public int getCooldown() { return this.foolsjourney$abilityCooldown; }
+    @Override public void setCooldown(int ticks) { this.foolsjourney$abilityCooldown = ticks; syncBeyonderData(); }
 
     @Override
-    public void setCooldown(int ticks) {
-        this.foolsjourney$abilityCooldown = ticks;
-        syncBeyonderData();
+    public double getDigestion() {
+        return this.foolsjourney$digestion;
     }
 
+    @Override
+    public void setDigestion(double digestion) {
+        this.foolsjourney$digestion = Math.max(0.0, Math.min(digestion, 100.0));
+        syncBeyonderData(); // ÖNEMLİ: Veri değişince senkronize et!
+    }
+
+    @Override
+    public void addDigestion(double amount) {
+        setDigestion(this.foolsjourney$digestion + amount);
+    }
+
+    // ... (tick ve diğer metodlar aynı kalabilir) ...
+    // Sadece yer kaplamaması için tick metodunu buraya tekrar yazmıyorum,
+    // mevcut tick metodun gayet iyi çalışıyor.
+
+    // NBT kısımlarını zaten doğru yapmıştın, onlar kalsın.
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo ci) {
+        // ... (Senin mevcut tick kodun buraya gelecek, dokunmana gerek yok) ...
+        // Sadece yukarıdaki setDigestion ve syncBeyonderData değişikliği kritik.
+
+        // Kopyala-Yapıştır kolaylığı için sadece değişmesi gereken yeri hatırlatayım:
+        // Kodun aynısını koru.
+
         if (this.getWorld().isClient) return;
 
         PlayerEntity player = (PlayerEntity) (Object) this;
@@ -107,9 +115,7 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         if (this.foolsjourney$sequence != -1 && (currentTime - this.foolsjourney$lastDangerWarningTime > 5000) && this.age % 10 == 0) {
 
             Box dangerZone = this.getBoundingBox().expand(10.0);
-
             List<HostileEntity> threats = this.getWorld().getEntitiesByClass(HostileEntity.class, dangerZone, entity -> entity.getTarget() == player);
-
             boolean dangerDetected = false;
 
             for (HostileEntity threat : threats) {
@@ -139,7 +145,6 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                             0.1
                     );
                 }
-
                 this.foolsjourney$lastDangerWarningTime = currentTime;
             }
         }
@@ -156,6 +161,13 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                         StatusEffects.NIGHT_VISION, -1, 0, false, false, false
                 ));
             }
+
+            // --- SİNDİRME EKLENTİSİ (Action Bar Mesajını Kaldır) ---
+            if (this.age % 200 == 0 && this.foolsjourney$sequence == 9 && this.foolsjourney$digestion < 100.0) {
+                this.addDigestion(0.2);
+                // Mesaj göndermeye gerek yok, HUD hallediyor.
+            }
+            // -----------------------------------------------------
 
             if (!isCreative) {
                 if (this.foolsjourney$spirituality > 0) {
@@ -194,6 +206,7 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         nbt.putDouble("lotm_spirituality", this.foolsjourney$spirituality);
         nbt.putBoolean("lotm_spirit_vision", this.foolsjourney$spiritVisionActive);
         nbt.putInt("lotm_cooldown", this.foolsjourney$abilityCooldown);
+        nbt.putDouble("lotm_digestion", this.foolsjourney$digestion);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
@@ -202,5 +215,6 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         if(nbt.contains("lotm_spirituality")) this.foolsjourney$spirituality = nbt.getDouble("lotm_spirituality");
         if(nbt.contains("lotm_spirit_vision")) this.foolsjourney$spiritVisionActive = nbt.getBoolean("lotm_spirit_vision");
         if(nbt.contains("lotm_cooldown")) this.foolsjourney$abilityCooldown = nbt.getInt("lotm_cooldown");
+        if(nbt.contains("lotm_digestion")) this.foolsjourney$digestion = nbt.getDouble("lotm_digestion");
     }
 }

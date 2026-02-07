@@ -80,6 +80,8 @@ public class SpiritPendulumItem extends Item {
 
                         spawnParticleTrail(user.getEyePos(), targetPlayer.getPos().add(0, 1, 0), user, ParticleTypes.WAX_ON);
 
+                        increaseDigestion(user, beyonder, 2.0);
+
                         user.getItemCooldownManager().set(this, 100);
                     } else {
                         user.sendMessage(Text.translatable("item.foolsjourney.spirit_pendulum.track_fail", targetName).formatted(Formatting.RED), true);
@@ -92,9 +94,11 @@ public class SpiritPendulumItem extends Item {
 
                 if (foundOre != null) {
                     user.sendMessage(Text.translatable("item.foolsjourney.spirit_pendulum.found").formatted(Formatting.LIGHT_PURPLE), true);
-                    world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
+                    world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.0f);
                     spawnParticleTrail(user.getEyePos(), new Vec3d(foundOre.getX() + 0.5, foundOre.getY() + 0.5, foundOre.getZ() + 0.5), user, ParticleTypes.DRAGON_BREATH);
+
+                    increaseDigestion(user, beyonder, 0.5);
 
                     user.getItemCooldownManager().set(this, 40);
                 } else {
@@ -117,6 +121,16 @@ public class SpiritPendulumItem extends Item {
         super.appendTooltip(stack, context, tooltip, type);
     }
 
+    private void increaseDigestion(PlayerEntity player, IBeyonder beyonder, double amount) {
+        if (beyonder.getDigestion() < 100.0) {
+            beyonder.addDigestion(amount);
+
+            if (beyonder.getDigestion() >= 100.0) {
+                player.sendMessage(Text.translatable("message.foolsjourney.digestion_complete").formatted(Formatting.GOLD, Formatting.BOLD), false);
+                player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            }
+        }
+    }
 
     private String getTargetNameFromItem(ItemStack stack) {
         if (stack.isEmpty()) return null;

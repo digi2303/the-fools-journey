@@ -14,4 +14,8 @@ public interface IBeyonder {
     void setCooldown(int ticks);
 
     void syncBeyonderData();
+
+    double getDigestion();
+    void setDigestion(double digestion);
+    void addDigestion(double amount);
 }

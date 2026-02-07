@@ -20,6 +20,9 @@ public class ClientModMessages {
                     beyonder.setCooldown(payload.cooldown());
                     beyonder.setSpiritVision(payload.active());
 
+                    // YENİ: Digestion verisini işle
+                    beyonder.setDigestion(payload.digestion());
+
                     if (wasActive != payload.active()) {
                         if (payload.active()) {
                             player.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE, 0.6f, 1.5f);
