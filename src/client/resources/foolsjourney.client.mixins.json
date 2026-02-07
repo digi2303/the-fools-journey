@@ -3,7 +3,8 @@
 	"package": "com.digi.foolsjourney.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"EntityGlowMixin",
+		"GlowingColorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
