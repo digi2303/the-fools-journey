@@ -1,10 +1,12 @@
 package com.digi.foolsjourney;
 
+import com.digi.foolsjourney.command.ModCommands;
 import com.digi.foolsjourney.event.CauldronBrewing;
 import com.digi.foolsjourney.registry.ModItems;
 import com.digi.foolsjourney.registry.ModItemGroups;
 import com.digi.foolsjourney.networking.ModMessages;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,5 +25,7 @@ public class TheFoolsJourney implements ModInitializer {
 		ModMessages.registerServerReceivers();
 
 		CauldronBrewing.register();
+
+		CommandRegistrationCallback.EVENT.register(ModCommands::register);
 	}
 }

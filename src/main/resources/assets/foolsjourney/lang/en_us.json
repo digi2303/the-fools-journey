@@ -30,5 +30,15 @@
   "message.foolsjourney.acting_progress": "Potion Digesting... [%%%s]",
   "message.foolsjourney.digestion_complete": "Potion fully digested! Fate calls you to the next step.",
 
-  "message.foolsjourney.mana_drained": "Mana drained!"
+  "message.foolsjourney.mana_drained": "Mana drained!",
+
+  "commands.foolsjourney.set_sequence": "Set sequence for player %s to %s.",
+  "commands.foolsjourney.set_digestion": "Set digestion for player %s to %s%%.",
+  "commands.foolsjourney.set_spirituality": "Set spirituality for player %s to %s.",
+  "commands.foolsjourney.reset_success": "Reset player %s! They are now mundane.",
+  "commands.foolsjourney.status_header": "--- Status: %s ---",
+  "commands.foolsjourney.status_sequence": "Sequence: %s",
+  "commands.foolsjourney.status_spirituality": "Spirituality: %s",
+  "commands.foolsjourney.status_digestion": "Digestion: %s%%",
+  "command.suggestion.foolsjourney.seer": "Seer"
 }

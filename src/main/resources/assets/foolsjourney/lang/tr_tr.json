@@ -30,5 +30,15 @@
   "message.foolsjourney.acting_progress": "İksir Sindiriliyor... [%%%s]",
   "message.foolsjourney.digestion_complete": "İksir tamamen sindirildi! Kader seni bir sonraki adıma çağırıyor.",
 
-  "message.foolsjourney.mana_drained": "Maneviyat tükendi!"
+  "message.foolsjourney.mana_drained": "Maneviyat tükendi!",
+
+  "commands.foolsjourney.set_sequence": "%s adlı oyuncunun sekansı %s yapıldı.",
+  "commands.foolsjourney.set_digestion": "%s adlı oyuncunun sindirmesi %%%s yapıldı.",
+  "commands.foolsjourney.set_spirituality": "%s adlı oyuncunun maneviyatı %s yapıldı.",
+  "commands.foolsjourney.reset_success": "%s sıfırlandı! Artık sıradan biri.",
+  "commands.foolsjourney.status_header": "--- Durum: %s ---",
+  "commands.foolsjourney.status_sequence": "Sekans: %s",
+  "commands.foolsjourney.status_spirituality": "Maneviyat: %s",
+  "commands.foolsjourney.status_digestion": "Sindirme: %%%s",
+  "command.suggestion.foolsjourney.seer": "Görücü"
 }
