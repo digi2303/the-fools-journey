@@ -19,6 +19,11 @@
   "tooltip.foolsjourney.spirit_pendulum.player_mode": "Sol El (Kafa/Etiket): O kişiyi takip et",
   "tooltip.foolsjourney.spirit_pendulum.cost": "Mana Bedeli: 10",
 
-  "message.foolsjourney.seer_potion_consumed": "Kaderin iplerini hissetmeye başlıyorsun... (Sequence 9: Seer)",
-  "message.foolsjourney.already_beyonder": "Zaten bir yolun yolcususun, fazlası delilik getirir!"
+  "message.foolsjourney.seer_potion_consumed": "Kaderin iplerini hissetmeye başlıyorsun... (Sekans 9: Görücü)",
+  "message.foolsjourney.already_beyonder": "Zaten bir yolun yolcususun, fazlası delilik getirir!",
+
+  "advancement.foolsjourney.root.title": "Aptal'ın Yolculuğu",
+  "advancement.foolsjourney.root.desc": "Görücü İksiri'ni için ve kaderin iplerini tutmaya başlayın.",
+  "advancement.foolsjourney.pendulum.title": "Ruh Çubukçusu",
+  "advancement.foolsjourney.pendulum.desc": "Bir Ruh Sarkacı üretin ve görünmeyeni bulun."
 }

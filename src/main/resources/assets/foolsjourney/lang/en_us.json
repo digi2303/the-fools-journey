@@ -20,5 +20,10 @@
   "tooltip.foolsjourney.spirit_pendulum.cost": "Spirituality Cost: 10",
 
   "message.foolsjourney.seer_potion_consumed": "You begin to feel the strings of fate... (Sequence 9: Seer)",
-  "message.foolsjourney.already_beyonder": "You are already walking a path, consuming more brings madness!"
+  "message.foolsjourney.already_beyonder": "You are already walking a path, consuming more brings madness!",
+
+  "advancement.foolsjourney.root.title": "The Fool's Journey",
+  "advancement.foolsjourney.root.desc": "Consume the Seer Potion and grasp the strings of fate.",
+  "advancement.foolsjourney.pendulum.title": "Spirit Dowser",
+  "advancement.foolsjourney.pendulum.desc": "Craft a Spirit Pendulum to locate the unseen."
 }
