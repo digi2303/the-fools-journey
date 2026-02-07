@@ -12,4 +12,6 @@ public interface IBeyonder {
 
     int getCooldown();
     void setCooldown(int ticks);
+
+    void syncBeyonderData();
 }

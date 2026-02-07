@@ -1,8 +1,8 @@
 package com.digi.foolsjourney;
 
-import com.digi.foolsjourney.networking.ModMessages;
-import com.digi.foolsjourney.registry.ModItemGroups;
 import com.digi.foolsjourney.registry.ModItems;
+import com.digi.foolsjourney.registry.ModItemGroups;
+import com.digi.foolsjourney.networking.ModMessages;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +17,8 @@ public class TheFoolsJourney implements ModInitializer {
 
 		ModItems.registerModItems();
 		ModItemGroups.registerItemGroups();
-		ModMessages.registerGlobalReceivers();
+
+		ModMessages.registerPayloads();
+		ModMessages.registerServerReceivers();
 	}
 }

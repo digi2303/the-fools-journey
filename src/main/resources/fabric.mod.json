@@ -22,7 +22,7 @@
 			"com.digi.foolsjourney.TheFoolsJourneyClient"
 		],
 		"fabric-datagen": [
-			"com.digi.foolsjourney.TheFoolsJourneyDataGenerator"
+			"com.digi.foolsjourney.datagen.ModDataGenerator"
 		]
 	},
 	"mixins": [
