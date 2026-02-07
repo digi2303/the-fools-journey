@@ -6,7 +6,7 @@
   "item.foolsjourney.spirit_pendulum": "Ruh Sarkacı",
 
   "item.foolsjourney.spirit_pendulum.fail_sequence": "Maneviyatın sarkacı yönlendirmek için yetersiz...",
-  "item.foolsjourney.spirit_pendulum.fail_mana": "[LotM] Yeterli manan yok!",
+  "item.foolsjourney.spirit_pendulum.fail_mana": "Yeterli maneviyatın yok!",
   "item.foolsjourney.spirit_pendulum.found": "Sarkaç titriyor... Bir hazineye işaret ediyor!",
   "item.foolsjourney.spirit_pendulum.not_found": "Sarkaç hareketsiz. Yakınlarda değerli bir şey yok.",
 
@@ -28,5 +28,7 @@
   "advancement.foolsjourney.pendulum.desc": "Bir Ruh Sarkacı üretin ve görünmeyeni bulun.",
 
   "message.foolsjourney.acting_progress": "İksir Sindiriliyor... [%%%s]",
-  "message.foolsjourney.digestion_complete": "İksir tamamen sindirildi! Kader seni bir sonraki adıma çağırıyor."
+  "message.foolsjourney.digestion_complete": "İksir tamamen sindirildi! Kader seni bir sonraki adıma çağırıyor.",
+
+  "message.foolsjourney.mana_drained": "Maneviyat tükendi!"
 }

@@ -20,7 +20,6 @@ public class ClientModMessages {
                     beyonder.setCooldown(payload.cooldown());
                     beyonder.setSpiritVision(payload.active());
 
-                    // YENİ: Digestion verisini işle
                     beyonder.setDigestion(payload.digestion());
 
                     if (wasActive != payload.active()) {

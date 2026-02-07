@@ -6,7 +6,7 @@
   "item.foolsjourney.spirit_pendulum": "Spirit Pendulum",
 
   "item.foolsjourney.spirit_pendulum.fail_sequence": "Your spirituality is insufficient to guide the pendulum...",
-  "item.foolsjourney.spirit_pendulum.fail_mana": "[LotM] Not enough spirituality!",
+  "item.foolsjourney.spirit_pendulum.fail_mana": "Not enough spirituality!",
   "item.foolsjourney.spirit_pendulum.found": "The pendulum trembles... It points to a treasure!",
   "item.foolsjourney.spirit_pendulum.not_found": "The pendulum remains still. Nothing valuable nearby.",
 
@@ -28,5 +28,7 @@
   "advancement.foolsjourney.pendulum.desc": "Craft a Spirit Pendulum to locate the unseen.",
 
   "message.foolsjourney.acting_progress": "Potion Digesting... [%%%s]",
-  "message.foolsjourney.digestion_complete": "Potion fully digested! Fate calls you to the next step."
+  "message.foolsjourney.digestion_complete": "Potion fully digested! Fate calls you to the next step.",
+
+  "message.foolsjourney.mana_drained": "Mana drained!"
 }

@@ -50,7 +50,9 @@ public class SeerPotionItem extends Item {
                     if (playerEntity != null) {
                         playerEntity.sendMessage(Text.translatable("message.foolsjourney.seer_potion_consumed").formatted(Formatting.DARK_PURPLE), false);
 
-                        world.playSound(null, playerEntity.getBlockPos(), SoundEvents.BLOCK_END_PORTAL_SPAWN, net.minecraft.sound.SoundCategory.PLAYERS, 0.5f, 1.0f);
+                        world.playSound(null, playerEntity.getBlockPos(),
+                                SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE,
+                                net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
                     }
                 }
             }

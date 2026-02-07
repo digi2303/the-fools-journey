@@ -14,6 +14,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -56,12 +57,11 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                     this.foolsjourney$spirituality,
                     this.foolsjourney$spiritVisionActive,
                     this.foolsjourney$abilityCooldown,
-                    this.foolsjourney$digestion // YENİ: Pakete eklendi
+                    this.foolsjourney$digestion
             ));
         }
     }
 
-    // ... (Diğer getter/setterlar aynı) ...
     @Override public int getSequence() { return this.foolsjourney$sequence; }
     @Override public void setSequence(int sequence) { this.foolsjourney$sequence = sequence; syncBeyonderData(); }
     @Override public double getSpirituality() { return this.foolsjourney$spirituality; }
@@ -79,7 +79,7 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
     @Override
     public void setDigestion(double digestion) {
         this.foolsjourney$digestion = Math.max(0.0, Math.min(digestion, 100.0));
-        syncBeyonderData(); // ÖNEMLİ: Veri değişince senkronize et!
+        syncBeyonderData();
     }
 
     @Override
@@ -87,18 +87,9 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         setDigestion(this.foolsjourney$digestion + amount);
     }
 
-    // ... (tick ve diğer metodlar aynı kalabilir) ...
-    // Sadece yer kaplamaması için tick metodunu buraya tekrar yazmıyorum,
-    // mevcut tick metodun gayet iyi çalışıyor.
 
-    // NBT kısımlarını zaten doğru yapmıştın, onlar kalsın.
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo ci) {
-        // ... (Senin mevcut tick kodun buraya gelecek, dokunmana gerek yok) ...
-        // Sadece yukarıdaki setDigestion ve syncBeyonderData değişikliği kritik.
-
-        // Kopyala-Yapıştır kolaylığı için sadece değişmesi gereken yeri hatırlatayım:
-        // Kodun aynısını koru.
 
         if (this.getWorld().isClient) return;
 
@@ -162,12 +153,9 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                 ));
             }
 
-            // --- SİNDİRME EKLENTİSİ (Action Bar Mesajını Kaldır) ---
             if (this.age % 200 == 0 && this.foolsjourney$sequence == 9 && this.foolsjourney$digestion < 100.0) {
                 this.addDigestion(0.2);
-                // Mesaj göndermeye gerek yok, HUD hallediyor.
             }
-            // -----------------------------------------------------
 
             if (!isCreative) {
                 if (this.foolsjourney$spirituality > 0) {
@@ -177,7 +165,9 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                     this.foolsjourney$spirituality = 0;
                     this.setSpiritVision(false);
                     this.foolsjourney$abilityCooldown = 100;
-                    player.sendMessage(Text.of("§c[LotM] Mana drained!"), true);
+
+                    player.sendMessage(Text.translatable("message.foolsjourney.mana_drained").formatted(Formatting.RED), true);
+
                     dataChanged = true;
                 }
             }
