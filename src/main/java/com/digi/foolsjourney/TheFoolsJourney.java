@@ -1,5 +1,6 @@
 package com.digi.foolsjourney;
 
+import com.digi.foolsjourney.event.CauldronBrewing;
 import com.digi.foolsjourney.registry.ModItems;
 import com.digi.foolsjourney.registry.ModItemGroups;
 import com.digi.foolsjourney.networking.ModMessages;
@@ -20,5 +21,7 @@ public class TheFoolsJourney implements ModInitializer {
 
 		ModMessages.registerPayloads();
 		ModMessages.registerServerReceivers();
+
+		CauldronBrewing.register();
 	}
 }

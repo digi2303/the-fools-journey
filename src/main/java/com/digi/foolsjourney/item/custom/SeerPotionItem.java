@@ -3,13 +3,19 @@ package com.digi.foolsjourney.item.custom;
 import com.digi.foolsjourney.util.IBeyonder;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
@@ -22,13 +28,56 @@ public class SeerPotionItem extends Item {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        return ItemUsage.consumeHeldItem(world, user, hand);
-    }
+    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+        PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity)user : null;
 
-    @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+        boolean isCreative = playerEntity != null && playerEntity.getAbilities().creativeMode;
+
+        if (!world.isClient) {
+            if (user instanceof IBeyonder beyonder) {
+                if (beyonder.getSequence() != -1) {
+                    if (playerEntity != null) {
+                        playerEntity.sendMessage(Text.translatable("message.foolsjourney.already_beyonder").formatted(Formatting.RED), true);
+                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 1));
+                    }
+                } else {
+                    beyonder.setSequence(9);
+                    beyonder.setSpirituality(100.0);
+
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 0));
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100, 0));
+
+                    if (playerEntity != null) {
+                        playerEntity.sendMessage(Text.translatable("message.foolsjourney.seer_potion_consumed").formatted(Formatting.DARK_PURPLE), false);
+
+                        world.playSound(null, playerEntity.getBlockPos(), SoundEvents.BLOCK_END_PORTAL_SPAWN, net.minecraft.sound.SoundCategory.PLAYERS, 0.5f, 1.0f);
+                    }
+                }
+            }
+        }
+
+        if (playerEntity instanceof ServerPlayerEntity serverPlayer) {
+            Criteria.CONSUME_ITEM.trigger(serverPlayer, stack);
+            serverPlayer.incrementStat(Stats.USED.getOrCreateStat(this));
+        }
+
+        if (isCreative) {
+            return stack;
+        }
+
+        stack.decrement(1);
+
+        if (stack.isEmpty()) {
+            return new ItemStack(Items.GLASS_BOTTLE);
+        } else {
+            if (playerEntity != null) {
+                ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
+                if (!playerEntity.getInventory().insertStack(glassBottle)) {
+                    playerEntity.dropItem(glassBottle, false);
+                }
+            }
+            return stack;
+        }
     }
 
     @Override
@@ -37,41 +86,22 @@ public class SeerPotionItem extends Item {
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        PlayerEntity player = user instanceof PlayerEntity ? (PlayerEntity) user : null;
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.DRINK;
+    }
 
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            Criteria.CONSUME_ITEM.trigger(serverPlayer, stack);
-        }
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        return ItemUsage.consumeHeldItem(world, user, hand);
+    }
 
-        if (!world.isClient && player instanceof IBeyonder beyonder) {
-            if (beyonder.getSequence() > -1) {
-                player.sendMessage(Text.of("§cAlready a Beyonder! Potion wasted..."), true);
-            } else {
-                beyonder.setSequence(9);
-                beyonder.setSpirituality(100.0);
+    @Override
+    public SoundEvent getDrinkSound() {
+        return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
+    }
 
-                player.sendMessage(Text.of("§5[LotM] You consumed the potion. The fog clears..."), false);
-                player.sendMessage(Text.of("§dYou are now Sequence 9: Seer."), false);
-            }
-        }
-
-        if (player != null) {
-            if (player.getAbilities().creativeMode) {
-                return stack;
-            }
-
-            stack.decrement(1);
-        }
-
-        if (stack.isEmpty()) {
-            return new ItemStack(Items.GLASS_BOTTLE);
-        }
-
-        if (player != null) {
-            player.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
-        }
-
-        return stack;
+    @Override
+    public SoundEvent getEatSound() {
+        return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
     }
 }

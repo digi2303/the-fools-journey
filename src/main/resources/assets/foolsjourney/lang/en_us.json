@@ -17,5 +17,8 @@
   "tooltip.foolsjourney.spirit_pendulum.shift_hint": "Hold [SHIFT] for info",
   "tooltip.foolsjourney.spirit_pendulum.ore_mode": "Right Click: Divining for ores",
   "tooltip.foolsjourney.spirit_pendulum.player_mode": "Offhand (Head/Tag): Track that person",
-  "tooltip.foolsjourney.spirit_pendulum.cost": "Spirituality Cost: 10"
+  "tooltip.foolsjourney.spirit_pendulum.cost": "Spirituality Cost: 10",
+
+  "message.foolsjourney.seer_potion_consumed": "You begin to feel the strings of fate... (Sequence 9: Seer)",
+  "message.foolsjourney.already_beyonder": "You are already walking a path, consuming more brings madness!"
 }

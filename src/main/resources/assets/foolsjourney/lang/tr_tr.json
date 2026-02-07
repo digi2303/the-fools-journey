@@ -17,5 +17,8 @@
   "tooltip.foolsjourney.spirit_pendulum.shift_hint": "Bilgi için [SHIFT] basılı tut",
   "tooltip.foolsjourney.spirit_pendulum.ore_mode": "Sağ Tık: Değerli madenleri ara",
   "tooltip.foolsjourney.spirit_pendulum.player_mode": "Sol El (Kafa/Etiket): O kişiyi takip et",
-  "tooltip.foolsjourney.spirit_pendulum.cost": "Mana Bedeli: 10"
+  "tooltip.foolsjourney.spirit_pendulum.cost": "Mana Bedeli: 10",
+
+  "message.foolsjourney.seer_potion_consumed": "Kaderin iplerini hissetmeye başlıyorsun... (Sequence 9: Seer)",
+  "message.foolsjourney.already_beyonder": "Zaten bir yolun yolcususun, fazlası delilik getirir!"
 }
