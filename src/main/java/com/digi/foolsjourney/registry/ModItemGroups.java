@@ -18,7 +18,7 @@ public class ModItemGroups {
                     .displayName(Text.translatable("itemgroup.foolsjourney.fools_journey_group"))
                     .entries((displayContext, entries) -> {
                         entries.add(ModItems.SEER_POTION);
-
+                        entries.add(ModItems.SPIRIT_PENDULUM);
                     })
                     .build());
 

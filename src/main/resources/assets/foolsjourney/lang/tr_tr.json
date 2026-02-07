@@ -1,0 +1,21 @@
+{
+  "item.foolsjourney.seer_potion": "Sekans 9: Görücü İksiri",
+  "itemgroup.foolsjourney.fools_journey_group": "Gizemlerin Efendisi",
+  "key.foolsjourney.spirit_vision": "Ruh Görüsünü Aç/Kapa",
+  "category.foolsjourney.lotm": "Gizemlerin Efendisi",
+  "item.foolsjourney.spirit_pendulum": "Ruh Sarkacı",
+
+  "item.foolsjourney.spirit_pendulum.fail_sequence": "Maneviyatın sarkacı yönlendirmek için yetersiz...",
+  "item.foolsjourney.spirit_pendulum.fail_mana": "[LotM] Yeterli manan yok!",
+  "item.foolsjourney.spirit_pendulum.found": "Sarkaç titriyor... Bir hazineye işaret ediyor!",
+  "item.foolsjourney.spirit_pendulum.not_found": "Sarkaç hareketsiz. Yakınlarda değerli bir şey yok.",
+
+  "item.foolsjourney.spirit_pendulum.track_success": "Bağ kuruldu! %s tespit ediliyor...",
+  "item.foolsjourney.spirit_pendulum.track_fail": "%s bulunamadı. Çok uzakta veya çevrimdışı.",
+  "item.foolsjourney.spirit_pendulum.track_self": "Kendine kehanet uygulamak sadece kaos getirir.",
+
+  "tooltip.foolsjourney.spirit_pendulum.shift_hint": "Bilgi için [SHIFT] basılı tut",
+  "tooltip.foolsjourney.spirit_pendulum.ore_mode": "Sağ Tık: Değerli madenleri ara",
+  "tooltip.foolsjourney.spirit_pendulum.player_mode": "Sol El (Kafa/Etiket): O kişiyi takip et",
+  "tooltip.foolsjourney.spirit_pendulum.cost": "Mana Bedeli: 10"
+}

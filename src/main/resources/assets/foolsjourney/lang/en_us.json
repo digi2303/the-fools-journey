@@ -2,5 +2,20 @@
   "item.foolsjourney.seer_potion": "Sequence 9: Seer Potion",
   "itemgroup.foolsjourney.fools_journey_group": "Lord of the Mysteries",
   "key.foolsjourney.spirit_vision": "Toggle Spirit Vision",
-  "category.foolsjourney.lotm": "Lord of the Mysteries"
+  "category.foolsjourney.lotm": "Lord of the Mysteries",
+  "item.foolsjourney.spirit_pendulum": "Spirit Pendulum",
+
+  "item.foolsjourney.spirit_pendulum.fail_sequence": "Your spirituality is insufficient to guide the pendulum...",
+  "item.foolsjourney.spirit_pendulum.fail_mana": "[LotM] Not enough spirituality!",
+  "item.foolsjourney.spirit_pendulum.found": "The pendulum trembles... It points to a treasure!",
+  "item.foolsjourney.spirit_pendulum.not_found": "The pendulum remains still. Nothing valuable nearby.",
+
+  "item.foolsjourney.spirit_pendulum.track_success": "Connection established! Locating %s...",
+  "item.foolsjourney.spirit_pendulum.track_fail": "Could not locate %s. They might be too far or offline.",
+  "item.foolsjourney.spirit_pendulum.track_self": "Divining yourself yields only chaos.",
+
+  "tooltip.foolsjourney.spirit_pendulum.shift_hint": "Hold [SHIFT] for info",
+  "tooltip.foolsjourney.spirit_pendulum.ore_mode": "Right Click: Divining for ores",
+  "tooltip.foolsjourney.spirit_pendulum.player_mode": "Offhand (Head/Tag): Track that person",
+  "tooltip.foolsjourney.spirit_pendulum.cost": "Spirituality Cost: 10"
 }
