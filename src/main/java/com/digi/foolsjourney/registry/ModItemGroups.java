@@ -20,6 +20,7 @@ public class ModItemGroups {
                         entries.add(ModItems.SEER_POTION);
                         entries.add(ModItems.SPIRIT_PENDULUM);
                         entries.add(ModItems.CLOWN_POTION);
+                        entries.add(ModItems.THROWING_CARD);
                     })
                     .build());
 
