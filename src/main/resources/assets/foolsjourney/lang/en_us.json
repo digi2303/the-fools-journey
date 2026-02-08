@@ -57,7 +57,13 @@
   "message.foolsjourney.acting_clown_fall": "A perfect landing! (Digestion +1)",
   "message.foolsjourney.acting_clown_kill": "You mocked fate! (Digestion +2)",
 
-  "key.foolsjourney.flame_snap": "Flame Snap (Ability 1)",
+  "key.foolsjourney.flame_snap": "Flame Snap",
   "message.foolsjourney.ability_cooldown": "Ability is on cooldown!",
-  "message.foolsjourney.not_enough_spirituality": "Not enough spirituality!"
+  "message.foolsjourney.not_enough_spirituality": "Not enough spirituality!",
+  "message.foolsjourney.ability_cooldown": "Ability is on cooldown!",
+
+  "message.foolsjourney.potion_failure": "Your body rejected the power! You are losing control!",
+  "message.foolsjourney.loss_of_control_death": "YOU LOST CONTROL! The whispers turn into a scream and your body mutates...",
+
+  "death.attack.foolsjourney.loss_of_control": "%1$s lost control and succumbed to madness."
 }

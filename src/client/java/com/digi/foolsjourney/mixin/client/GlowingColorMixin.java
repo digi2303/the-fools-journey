@@ -4,8 +4,11 @@ import com.digi.foolsjourney.util.IBeyonder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.GolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,12 +34,18 @@ public abstract class GlowingColorMixin {
         if (client.player instanceof IBeyonder beyonder && beyonder.isSpiritVisionActive()) {
 
             if (client.player.distanceTo(entity) < 30.0) {
+
                 if (entity instanceof HostileEntity) {
                     cir.setReturnValue(0xFF0000);
                     return;
                 }
 
-                if (entity instanceof AnimalEntity || entity instanceof VillagerEntity) {
+                if (entity instanceof AnimalEntity ||
+                        entity instanceof VillagerEntity ||
+                        entity instanceof WaterCreatureEntity ||
+                        entity instanceof GolemEntity ||
+                        entity instanceof AmbientEntity) {
+
                     cir.setReturnValue(0x55FF55);
                     return;
                 }

@@ -17,23 +17,26 @@ import net.minecraft.util.Formatting;
 
 public class ModCommands {
 
+    // Komut önerileri (Tab tuşuna basınca çıkanlar)
     private static final SuggestionProvider<ServerCommandSource> SEQUENCE_SUGGESTIONS = (context, builder) -> {
         builder.suggest(9, Text.translatable("command.suggestion.foolsjourney.seer"));
         builder.suggest(8, Text.translatable("command.suggestion.foolsjourney.clown"));
-
         return builder.buildFuture();
     };
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("lotm")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(2)) // OP yetkisi (Seviye 2)
 
+                // --- STATUS KOMUTLARI ---
                 .then(CommandManager.literal("status")
                         .executes(ModCommands::runStatusSelf)
                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                 .executes(ModCommands::runStatusTarget)))
 
+                // --- SET KOMUTLARI ---
                 .then(CommandManager.literal("set")
+                        // Sequence Ayarlama
                         .then(CommandManager.literal("sequence")
                                 .then(CommandManager.argument("level", IntegerArgumentType.integer(0, 9))
                                         .suggests(SEQUENCE_SUGGESTIONS)
@@ -41,12 +44,14 @@ public class ModCommands {
                                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                                 .executes(ModCommands::runSetSequenceTarget))))
 
+                        // Digestion (Sindirme) Ayarlama
                         .then(CommandManager.literal("digestion")
                                 .then(CommandManager.argument("amount", DoubleArgumentType.doubleArg(0.0, 100.0))
                                         .executes(ModCommands::runSetDigestionSelf)
                                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                                 .executes(ModCommands::runSetDigestionTarget))))
 
+                        // Spirituality (Mana) Ayarlama
                         .then(CommandManager.literal("spirituality")
                                 .then(CommandManager.argument("amount", DoubleArgumentType.doubleArg(0.0))
                                         .executes(ModCommands::runSetSpiritualitySelf)
@@ -54,17 +59,26 @@ public class ModCommands {
                                                 .executes(ModCommands::runSetSpiritualityTarget))))
                 )
 
+                // --- RESET KOMUTLARI ---
                 .then(CommandManager.literal("reset")
                         .executes(ModCommands::runResetSelf)
                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                 .executes(ModCommands::runResetTarget)))
         );
     }
+
+    // --- MANTIK METOTLARI (Logic Methods) ---
+
     private static int statusLogic(ServerCommandSource source, ServerPlayerEntity target) {
         if (target instanceof IBeyonder beyonder) {
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_header", target.getName().getString()).formatted(Formatting.GOLD), false);
-            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_sequence", beyonder.getSequence()).formatted(Formatting.YELLOW), false);
-            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_spirituality", beyonder.getSpirituality()).formatted(Formatting.AQUA), false);
+
+            int seq = beyonder.getSequence();
+            String seqText = (seq == -1) ? "None" : String.valueOf(seq);
+
+            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_sequence", seqText).formatted(Formatting.YELLOW), false);
+            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_spirituality", String.format("%.1f", beyonder.getSpirituality())).formatted(Formatting.AQUA), false);
+
             String digestionStr = String.format("%.1f", beyonder.getDigestion());
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_digestion", digestionStr).formatted(Formatting.GREEN), false);
         }
@@ -75,13 +89,17 @@ public class ModCommands {
         if (target instanceof IBeyonder beyonder) {
             beyonder.setSequence(level);
 
+            // Sekansa göre manayı otomatik ayarla
             double maxSpirituality = 100.0;
-
             if (level <= 8) {
                 maxSpirituality = 200.0;
             }
+
             beyonder.setSpirituality(maxSpirituality);
-            beyonder.setDigestion(0.0);
+            beyonder.setDigestion(0.0); // Yeni sekansa geçince sindirme sıfırlanır
+
+            // Verileri senkronize et
+            beyonder.syncBeyonderData();
 
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_sequence", target.getName().getString(), level).formatted(Formatting.GREEN), true);
         }
@@ -91,7 +109,9 @@ public class ModCommands {
     private static int setDigestionLogic(ServerCommandSource source, ServerPlayerEntity target, double amount) {
         if (target instanceof IBeyonder beyonder) {
             beyonder.setDigestion(amount);
-            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_digestion", target.getName().getString(), amount).formatted(Formatting.GREEN), true);
+            beyonder.syncBeyonderData();
+
+            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_digestion", target.getName().getString(), String.format("%.1f", amount)).formatted(Formatting.GREEN), true);
         }
         return 1;
     }
@@ -99,7 +119,9 @@ public class ModCommands {
     private static int setSpiritualityLogic(ServerCommandSource source, ServerPlayerEntity target, double amount) {
         if (target instanceof IBeyonder beyonder) {
             beyonder.setSpirituality(amount);
-            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_spirituality", target.getName().getString(), amount).formatted(Formatting.GREEN), true);
+            beyonder.syncBeyonderData();
+
+            source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_spirituality", target.getName().getString(), String.format("%.1f", amount)).formatted(Formatting.GREEN), true);
         }
         return 1;
     }
@@ -110,12 +132,16 @@ public class ModCommands {
             beyonder.setSpirituality(0);
             beyonder.setDigestion(0);
             beyonder.setSpiritVision(false);
+            beyonder.setCooldown(0);
 
+            beyonder.syncBeyonderData();
 
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.reset_success", target.getName().getString()).formatted(Formatting.RED), true);
         }
         return 1;
     }
+
+    // --- ÇALIŞTIRMA METOTLARI (Runner Methods) ---
 
     private static int runStatusSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return statusLogic(context.getSource(), context.getSource().getPlayerOrThrow());
@@ -123,24 +149,28 @@ public class ModCommands {
     private static int runStatusTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return statusLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"));
     }
+
     private static int runSetSequenceSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSequenceLogic(context.getSource(), context.getSource().getPlayerOrThrow(), IntegerArgumentType.getInteger(context, "level"));
     }
     private static int runSetSequenceTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSequenceLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "level"));
     }
+
     private static int runSetDigestionSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setDigestionLogic(context.getSource(), context.getSource().getPlayerOrThrow(), DoubleArgumentType.getDouble(context, "amount"));
     }
     private static int runSetDigestionTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setDigestionLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
     }
+
     private static int runSetSpiritualitySelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSpiritualityLogic(context.getSource(), context.getSource().getPlayerOrThrow(), DoubleArgumentType.getDouble(context, "amount"));
     }
     private static int runSetSpiritualityTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSpiritualityLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
     }
+
     private static int runResetSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return resetLogic(context.getSource(), context.getSource().getPlayerOrThrow());
     }

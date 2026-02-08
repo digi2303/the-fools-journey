@@ -1,8 +1,10 @@
 package com.digi.foolsjourney.item.custom;
 
+import com.digi.foolsjourney.registry.ModDamageTypes;
 import com.digi.foolsjourney.util.IBeyonder;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -37,53 +40,63 @@ public class ClownPotionItem extends Item {
                 int currentSeq = beyonder.getSequence();
                 double currentDigestion = beyonder.getDigestion();
 
-                if (currentSeq == 9) {
+                if (currentSeq != -1 && currentSeq <= 8) {
+                    if (playerEntity != null) playerEntity.sendMessage(Text.translatable("message.foolsjourney.already_sequence").formatted(Formatting.RED), true);
+                }
 
-                    if (currentDigestion >= 100.0 || isCreative) {
-                        beyonder.setSequence(8);
-                        beyonder.setSpirituality(200.0);
-                        beyonder.setDigestion(0.0);
+                else if (isCreative || (currentSeq == 9 && currentDigestion >= 100.0)) {
+                    beyonder.setSequence(8);
+                    beyonder.setSpirituality(200.0);
+                    beyonder.setDigestion(0.0);
 
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 0));
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 0));
 
-                        if (playerEntity != null) {
-                            playerEntity.sendMessage(Text.translatable("message.foolsjourney.advance_clown").formatted(Formatting.DARK_RED, Formatting.BOLD), false);
-
-                            world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_WITCH_CELEBRATE, net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
-                        }
-                    }
-                    else if (currentDigestion >= 50.0) {
-                        if (playerEntity != null) {
-                            playerEntity.sendMessage(Text.translatable("message.foolsjourney.loss_of_control_risk").formatted(Formatting.RED), true);
-                        }
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 600, 2));
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 600, 4));
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1200, 2));
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100, 0));
-
-                        float currentHealth = user.getHealth();
-                        user.damage(user.getDamageSources().magic(), currentHealth * 0.8f);
-
-                        world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_WARDEN_HEARTBEAT, net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
-                    }
-                    else {
-                        if (playerEntity != null) {
-                            playerEntity.sendMessage(Text.translatable("message.foolsjourney.loss_of_control_death").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), true);
-                        }
-
-                        user.damage(user.getDamageSources().outOfWorld(), Float.MAX_VALUE);
+                    if (playerEntity != null) {
+                        playerEntity.sendMessage(Text.translatable("message.foolsjourney.advance_clown").formatted(Formatting.DARK_RED, Formatting.BOLD), false);
+                        world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_WITCH_CELEBRATE, net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
                     }
                 }
 
-                else if (currentSeq == 8) {
-                    if (playerEntity != null) playerEntity.sendMessage(Text.translatable("message.foolsjourney.already_sequence").formatted(Formatting.RED), true);
+                else if (currentSeq == 9 && currentDigestion >= 50.0) {
+                    if (playerEntity != null) {
+                        playerEntity.sendMessage(Text.translatable("message.foolsjourney.loss_of_control_risk").formatted(Formatting.RED), true);
+                    }
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 600, 2));
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 600, 4));
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1200, 2));
+                    user.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100, 0));
+
+                    float currentHealth = user.getHealth();
+                    user.damage(user.getDamageSources().magic(), currentHealth * 0.8f);
+
+                    world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_WARDEN_HEARTBEAT, net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
                 }
 
                 else {
                     if (playerEntity != null) {
-                        playerEntity.sendMessage(Text.translatable("message.foolsjourney.potion_failure").formatted(Formatting.RED, Formatting.OBFUSCATED), true);
-                        user.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 100, 2));
-                        user.damage(user.getDamageSources().magic(), 10.0f);
+                        if (currentSeq == 9) {
+                            playerEntity.sendMessage(Text.translatable("message.foolsjourney.loss_of_control_death").formatted(Formatting.DARK_PURPLE, Formatting.BOLD), true);
+                        }
+                        else {
+                            playerEntity.sendMessage(Text.translatable("message.foolsjourney.potion_failure").formatted(Formatting.DARK_RED, Formatting.OBFUSCATED), true);
+                            world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ENTITY_WARDEN_DEATH, net.minecraft.sound.SoundCategory.PLAYERS, 1.0f, 1.0f);
+                        }
+                    }
+
+                    if (!isCreative) {
+                        if (currentSeq != 9) {
+                            user.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 40, 0));
+                            user.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 40, 4));
+                        }
+
+                        if (world instanceof ServerWorld serverWorld) {
+                            DamageSource source = serverWorld.getDamageSources().create(ModDamageTypes.LOSS_OF_CONTROL);
+                            user.damage(source, Float.MAX_VALUE);
+                        } else {
+                            user.damage(user.getDamageSources().outOfWorld(), Float.MAX_VALUE);
+                        }
+
+                        user.setHealth(0);
                     }
                 }
             }
