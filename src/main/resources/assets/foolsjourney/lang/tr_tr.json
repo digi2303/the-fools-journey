@@ -40,5 +40,24 @@
   "commands.foolsjourney.status_sequence": "Sekans: %s",
   "commands.foolsjourney.status_spirituality": "Maneviyat: %s",
   "commands.foolsjourney.status_digestion": "Sindirme: %%%s",
-  "command.suggestion.foolsjourney.seer": "Görücü"
+  "command.suggestion.foolsjourney.seer": "Görücü",
+
+  "item.foolsjourney.clown_potion": "Sekans 8: Palyaço İksiri",
+  "message.foolsjourney.advance_clown": "Yüz kasların seğiriyor... Dünyaya gülümseme vaktin geldi! (Sekans 8: Palyaço)",
+  "message.foolsjourney.already_sequence": "Zaten bu seviyedesin veya daha yükseksin.",
+  "message.foolsjourney.potion_failure": "Vücudun bu gücü kaldıramadı! Kontrolden çıkıyorsun!",
+
+  "command.suggestion.foolsjourney.clown": "Palyaço",
+
+  "message.foolsjourney.potion_undigested": "Önceki iksiri tamamen sindirmedin! Maneviyatın isyan ediyor!",
+
+  "message.foolsjourney.loss_of_control_risk": "Zihninde çatlaklar oluşuyor! Deliliğin kıyısındasın...",
+  "message.foolsjourney.loss_of_control_death": "KONTROLDEN ÇIKTIN! Fısıltılar bir çığlığa dönüşüyor ve bedenin mutasyona uğruyor...",
+
+  "message.foolsjourney.acting_clown_fall": "Mükemmel bir iniş! (Sindirme +1)",
+  "message.foolsjourney.acting_clown_kill": "Kaderle alay ettin! (Sindirme +2)",
+
+  "key.foolsjourney.flame_snap": "Alev Şıklatması (Yetenek 1)",
+  "message.foolsjourney.ability_cooldown": "Yetenek bekleme süresinde!",
+  "message.foolsjourney.not_enough_spirituality": "Maneviyatın yetersiz!"
 }

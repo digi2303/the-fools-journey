@@ -19,7 +19,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         itemModelGenerator.register(ModItems.SEER_POTION, Models.GENERATED);
-
+        itemModelGenerator.register(ModItems.CLOWN_POTION, Models.GENERATED);
         itemModelGenerator.register(ModItems.SPIRIT_PENDULUM, Models.GENERATED);
     }
 }

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
@@ -28,49 +29,32 @@ public class CauldronBrewing {
                 if (heldItem.getItem() == Items.GLASS_BOTTLE) {
 
                     BlockPos pos = hitResult.getBlockPos();
-
                     Box cauldronBox = new Box(pos);
+
                     List<ItemEntity> itemsInside = world.getEntitiesByClass(ItemEntity.class, cauldronBox, entity -> true);
 
-                    boolean hasInkSac = false;
-                    boolean hasAmethyst = false;
-
-                    ItemEntity inkEntity = null;
+                    ItemEntity glowInkEntity = null;
                     ItemEntity amethystEntity = null;
+
+                    ItemEntity roseBushEntity = null;
+                    ItemEntity sugarEntity = null;
 
                     for (ItemEntity itemEntity : itemsInside) {
                         ItemStack stack = itemEntity.getStack();
-                        if (stack.getItem() == Items.GLOW_INK_SAC) {
-                            hasInkSac = true;
-                            inkEntity = itemEntity;
-                        } else if (stack.getItem() == Items.AMETHYST_SHARD) {
-                            hasAmethyst = true;
-                            amethystEntity = itemEntity;
-                        }
+
+                        if (stack.isOf(Items.GLOW_INK_SAC)) glowInkEntity = itemEntity;
+                        else if (stack.isOf(Items.AMETHYST_SHARD)) amethystEntity = itemEntity;
+                        else if (stack.isOf(Items.ROSE_BUSH)) roseBushEntity = itemEntity;
+                        else if (stack.isOf(Items.SUGAR)) sugarEntity = itemEntity;
                     }
 
-                    if (hasInkSac && hasAmethyst) {
+                    if (glowInkEntity != null && amethystEntity != null) {
+                        craftPotion(world, pos, player, heldItem, ModItems.SEER_POTION, glowInkEntity, amethystEntity);
+                        return ActionResult.SUCCESS;
+                    }
 
-                        ItemStack inkStack = inkEntity.getStack();
-                        inkStack.decrement(1);
-                        if (inkStack.isEmpty()) inkEntity.discard();
-
-                        ItemStack amethystStack = amethystEntity.getStack();
-                        amethystStack.decrement(1);
-                        if (amethystStack.isEmpty()) amethystEntity.discard();
-
-                        heldItem.decrement(1);
-
-                        ItemStack potionStack = new ItemStack(ModItems.SEER_POTION);
-                        if (!player.getInventory().insertStack(potionStack)) {
-                            player.dropItem(potionStack, false);
-                        }
-
-                        LeveledCauldronBlock.decrementFluidLevel(world.getBlockState(pos), world, pos);
-
-                        world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
-
+                    else if (roseBushEntity != null && sugarEntity != null) {
+                        craftPotion(world, pos, player, heldItem, ModItems.CLOWN_POTION, roseBushEntity, sugarEntity);
                         return ActionResult.SUCCESS;
                     }
                 }
@@ -78,5 +62,31 @@ public class CauldronBrewing {
 
             return ActionResult.PASS;
         });
+    }
+
+    private static void craftPotion(net.minecraft.world.World world, BlockPos pos, net.minecraft.entity.player.PlayerEntity player, ItemStack heldBottle, Item resultPotion, ItemEntity ingredient1, ItemEntity ingredient2) {
+
+        decrementItemEntity(ingredient1);
+        decrementItemEntity(ingredient2);
+
+        heldBottle.decrement(1);
+
+        ItemStack potionStack = new ItemStack(resultPotion);
+        if (!player.getInventory().insertStack(potionStack)) {
+            player.dropItem(potionStack, false);
+        }
+
+        LeveledCauldronBlock.decrementFluidLevel(world.getBlockState(pos), world, pos);
+
+        world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0f, 1.0f);
+        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
+    }
+
+    private static void decrementItemEntity(ItemEntity entity) {
+        ItemStack stack = entity.getStack();
+        stack.decrement(1);
+        if (stack.isEmpty()) {
+            entity.discard();
+        }
     }
 }

@@ -19,6 +19,7 @@ public class ModItemGroups {
                     .entries((displayContext, entries) -> {
                         entries.add(ModItems.SEER_POTION);
                         entries.add(ModItems.SPIRIT_PENDULUM);
+                        entries.add(ModItems.CLOWN_POTION);
                     })
                     .build());
 

@@ -22,7 +22,8 @@ public class DigestionHudOverlay implements HudRenderCallback {
         if (client.options.hudHidden) return;
 
         if (client.player instanceof IBeyonder beyonder) {
-            if (beyonder.getSequence() != 9) return;
+
+            if (beyonder.getSequence() == -1) return;
 
             double currentDigestion = beyonder.getDigestion();
             double maxDigestion = 100.0;
@@ -58,6 +59,8 @@ public class DigestionHudOverlay implements HudRenderCallback {
             int y = height - 67;
 
             float percentage = (float) (currentDigestion / maxDigestion);
+            if (percentage > 1.0f) percentage = 1.0f;
+
             int filledWidth = (int) (100 * percentage);
 
             int frameColor = getColorWithAlpha(0x000000, 0.5f * alpha);

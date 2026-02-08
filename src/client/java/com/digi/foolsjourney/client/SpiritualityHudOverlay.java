@@ -23,7 +23,8 @@ public class SpiritualityHudOverlay implements HudRenderCallback {
             if (beyonder.getSequence() == -1) return;
 
             double currentMana = beyonder.getSpirituality();
-            double maxMana = 100.0;
+
+            double maxMana = beyonder.getMaxSpirituality();
 
             if (currentMana < maxMana) {
                 lastActiveTime = System.currentTimeMillis();
@@ -53,10 +54,11 @@ public class SpiritualityHudOverlay implements HudRenderCallback {
             int y = height - 55;
 
             float percentage = (float) (currentMana / maxMana);
+            if (percentage > 1.0f) percentage = 1.0f;
+
             int filledWidth = (int) (100 * percentage);
 
             int frameColor = getColorWithAlpha(0x000000, 0.5f * alpha);
-
             int barColor = getColorWithAlpha(0x9B30FF, alpha);
 
             context.fill(x, y, x + barWidth, y + barHeight, frameColor);

@@ -5,6 +5,9 @@ import com.digi.foolsjourney.util.IBeyonder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
@@ -15,6 +18,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -23,6 +27,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +51,16 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
     @Unique private long foolsjourney$lastDangerWarningTime = 0;
     @Unique private final Set<UUID> foolsjourney$knownThreats = new HashSet<>();
 
+    @Unique
+    private static final Identifier CLOWN_SPEED_ID = Identifier.of("foolsjourney", "clown_speed_boost");
+
+    @Unique
+    private static final EntityAttributeModifier CLOWN_SPEED_MODIFIER = new EntityAttributeModifier(
+            CLOWN_SPEED_ID,
+            0.20,
+            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+    );
+
     @SuppressWarnings("AddedMixinMembers")
     @Override
     public void syncBeyonderData() {
@@ -66,6 +81,15 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
     @Override public void setSequence(int sequence) { this.foolsjourney$sequence = sequence; syncBeyonderData(); }
     @Override public double getSpirituality() { return this.foolsjourney$spirituality; }
     @Override public void setSpirituality(double spirituality) { this.foolsjourney$spirituality = spirituality; syncBeyonderData(); }
+
+    @Override
+    public double getMaxSpirituality() {
+        if (this.foolsjourney$sequence != -1 && this.foolsjourney$sequence <= 8) {
+            return 200.0;
+        }
+        return 100.0;
+    }
+
     @Override public boolean isSpiritVisionActive() { return this.foolsjourney$spiritVisionActive; }
     @Override public void setSpiritVision(boolean active) { this.foolsjourney$spiritVisionActive = active; syncBeyonderData(); }
     @Override public int getCooldown() { return this.foolsjourney$abilityCooldown; }
@@ -87,6 +111,33 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         setDigestion(this.foolsjourney$digestion + amount);
     }
 
+    @Inject(method = "onKilledOther", at = @At("HEAD"))
+    public void onKilledOtherInject(ServerWorld world, LivingEntity other, CallbackInfoReturnable<Boolean> cir) {
+        if (this.foolsjourney$sequence == 8 && other instanceof HostileEntity) {
+            if (this.foolsjourney$digestion < 100.0) {
+                this.addDigestion(2.0);
+
+                ((PlayerEntity)(Object)this).sendMessage(Text.translatable("message.foolsjourney.acting_clown_kill").formatted(Formatting.RED), true);
+            }
+        }
+    }
+
+    @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
+    public void onFallDamage(float fallDistance, float damageMultiplier, net.minecraft.entity.damage.DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        if (this.foolsjourney$sequence != -1 && this.foolsjourney$sequence <= 8) {
+
+            if (this.foolsjourney$sequence == 8 && fallDistance > 3.0f) {
+                if (this.getWorld() instanceof ServerWorld) {
+                    if (this.foolsjourney$digestion < 100.0) {
+                        this.addDigestion(1.0);
+                        ((PlayerEntity)(Object)this).sendMessage(Text.translatable("message.foolsjourney.acting_clown_fall").formatted(Formatting.GOLD), true);
+                    }
+                }
+            }
+
+            cir.setReturnValue(false);
+        }
+    }
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo ci) {
@@ -96,6 +147,20 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         PlayerEntity player = (PlayerEntity) (Object) this;
         boolean isCreative = player.getAbilities().creativeMode;
         boolean dataChanged = false;
+
+        EntityAttributeInstance speedAttribute = player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        if (speedAttribute != null) {
+            if (this.foolsjourney$sequence != -1 && this.foolsjourney$sequence <= 8) {
+                if (!speedAttribute.hasModifier(CLOWN_SPEED_ID)) {
+                    speedAttribute.addTemporaryModifier(CLOWN_SPEED_MODIFIER);
+                }
+            }
+            else {
+                if (speedAttribute.hasModifier(CLOWN_SPEED_ID)) {
+                    speedAttribute.removeModifier(CLOWN_SPEED_ID);
+                }
+            }
+        }
 
         if (this.foolsjourney$abilityCooldown > 0) {
             this.foolsjourney$abilityCooldown--;
@@ -178,9 +243,12 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
                 this.removeStatusEffect(StatusEffects.NIGHT_VISION);
             }
 
-            if (this.foolsjourney$spirituality < 100.0) {
+            if (this.foolsjourney$spirituality < this.getMaxSpirituality()) {
                 this.foolsjourney$spirituality += 0.5;
-                if (this.foolsjourney$spirituality > 100.0) this.foolsjourney$spirituality = 100.0;
+
+                if (this.foolsjourney$spirituality > this.getMaxSpirituality()) {
+                    this.foolsjourney$spirituality = this.getMaxSpirituality();
+                }
                 dataChanged = true;
             }
         }

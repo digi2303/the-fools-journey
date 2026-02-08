@@ -19,6 +19,7 @@ public class ModCommands {
 
     private static final SuggestionProvider<ServerCommandSource> SEQUENCE_SUGGESTIONS = (context, builder) -> {
         builder.suggest(9, Text.translatable("command.suggestion.foolsjourney.seer"));
+        builder.suggest(8, Text.translatable("command.suggestion.foolsjourney.clown"));
 
         return builder.buildFuture();
     };
@@ -59,8 +60,6 @@ public class ModCommands {
                                 .executes(ModCommands::runResetTarget)))
         );
     }
-
-
     private static int statusLogic(ServerCommandSource source, ServerPlayerEntity target) {
         if (target instanceof IBeyonder beyonder) {
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_header", target.getName().getString()).formatted(Formatting.GOLD), false);
@@ -75,7 +74,13 @@ public class ModCommands {
     private static int setSequenceLogic(ServerCommandSource source, ServerPlayerEntity target, int level) {
         if (target instanceof IBeyonder beyonder) {
             beyonder.setSequence(level);
-            beyonder.setSpirituality(100.0);
+
+            double maxSpirituality = 100.0;
+
+            if (level <= 8) {
+                maxSpirituality = 200.0;
+            }
+            beyonder.setSpirituality(maxSpirituality);
             beyonder.setDigestion(0.0);
 
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_sequence", target.getName().getString(), level).formatted(Formatting.GREEN), true);
@@ -105,11 +110,12 @@ public class ModCommands {
             beyonder.setSpirituality(0);
             beyonder.setDigestion(0);
             beyonder.setSpiritVision(false);
+
+
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.reset_success", target.getName().getString()).formatted(Formatting.RED), true);
         }
         return 1;
     }
-
 
     private static int runStatusSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return statusLogic(context.getSource(), context.getSource().getPlayerOrThrow());
@@ -117,28 +123,24 @@ public class ModCommands {
     private static int runStatusTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return statusLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"));
     }
-
     private static int runSetSequenceSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSequenceLogic(context.getSource(), context.getSource().getPlayerOrThrow(), IntegerArgumentType.getInteger(context, "level"));
     }
     private static int runSetSequenceTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSequenceLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "level"));
     }
-
     private static int runSetDigestionSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setDigestionLogic(context.getSource(), context.getSource().getPlayerOrThrow(), DoubleArgumentType.getDouble(context, "amount"));
     }
     private static int runSetDigestionTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setDigestionLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
     }
-
     private static int runSetSpiritualitySelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSpiritualityLogic(context.getSource(), context.getSource().getPlayerOrThrow(), DoubleArgumentType.getDouble(context, "amount"));
     }
     private static int runSetSpiritualityTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return setSpiritualityLogic(context.getSource(), EntityArgumentType.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
     }
-
     private static int runResetSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return resetLogic(context.getSource(), context.getSource().getPlayerOrThrow());
     }

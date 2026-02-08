@@ -7,6 +7,8 @@ public interface IBeyonder {
     double getSpirituality();
     void setSpirituality(double spirituality);
 
+    double getMaxSpirituality();
+
     boolean isSpiritVisionActive();
     void setSpiritVision(boolean active);
 

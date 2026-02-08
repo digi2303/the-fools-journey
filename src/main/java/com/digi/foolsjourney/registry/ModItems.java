@@ -1,5 +1,6 @@
 package com.digi.foolsjourney.registry;
 
+import com.digi.foolsjourney.item.custom.ClownPotionItem;
 import com.digi.foolsjourney.item.custom.SeerPotionItem;
 import com.digi.foolsjourney.item.custom.SpiritPendulumItem;
 import net.minecraft.item.Item;
@@ -10,6 +11,9 @@ import net.minecraft.util.Identifier;
 public class ModItems {
     public static final Item SEER_POTION = registerItem("seer_potion",
             new SeerPotionItem(new Item.Settings().maxCount(1)));
+
+    public static final Item CLOWN_POTION = registerItem("clown_potion",
+            new ClownPotionItem(new Item.Settings().maxCount(1)));
 
     public static final Item SPIRIT_PENDULUM = registerItem("spirit_pendulum",
             new SpiritPendulumItem(new Item.Settings().maxCount(1)));

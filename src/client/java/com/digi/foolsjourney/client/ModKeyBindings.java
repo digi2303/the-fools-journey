@@ -1,5 +1,6 @@
 package com.digi.foolsjourney.client;
 
+import com.digi.foolsjourney.networking.ModMessages;
 import com.digi.foolsjourney.networking.SpiritVisionPayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -10,6 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class ModKeyBindings {
     public static KeyBinding SPIRIT_VISION_KEY;
+    public static KeyBinding FLAME_SNAP_KEY;
 
     public static void register() {
         SPIRIT_VISION_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -19,10 +21,23 @@ public class ModKeyBindings {
                 "category.foolsjourney.lotm"
         ));
 
+        FLAME_SNAP_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.foolsjourney.flame_snap",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_R,
+                "category.foolsjourney.lotm"
+        ));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (SPIRIT_VISION_KEY.wasPressed()) {
                 if (ClientPlayNetworking.canSend(SpiritVisionPayload.ID)) {
                     ClientPlayNetworking.send(new SpiritVisionPayload());
+                }
+            }
+
+            while (FLAME_SNAP_KEY.wasPressed()) {
+                if (ClientPlayNetworking.canSend(ModMessages.FlameSnapPayload.ID)) {
+                    ClientPlayNetworking.send(new ModMessages.FlameSnapPayload());
                 }
             }
         });

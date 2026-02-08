@@ -40,5 +40,24 @@
   "commands.foolsjourney.status_sequence": "Sequence: %s",
   "commands.foolsjourney.status_spirituality": "Spirituality: %s",
   "commands.foolsjourney.status_digestion": "Digestion: %s%%",
-  "command.suggestion.foolsjourney.seer": "Seer"
+  "command.suggestion.foolsjourney.seer": "Seer",
+
+  "item.foolsjourney.clown_potion": "Sequence 8: Clown Potion",
+  "message.foolsjourney.advance_clown": "Your facial muscles twitch... Time to smile at the world! (Sequence 8: Clown)",
+  "message.foolsjourney.already_sequence": "You are already at this sequence or higher.",
+  "message.foolsjourney.potion_failure": "Your body rejected the power! You are losing control!",
+
+  "command.suggestion.foolsjourney.clown": "Clown",
+
+  "message.foolsjourney.potion_undigested": "You haven't fully digested the previous potion! Your spirituality revolts!",
+
+  "message.foolsjourney.loss_of_control_risk": "Cracks form in your mind! You are on the verge of madness...",
+  "message.foolsjourney.loss_of_control_death": "YOU LOST CONTROL! The whispers turn into a scream and your body mutates...",
+
+  "message.foolsjourney.acting_clown_fall": "A perfect landing! (Digestion +1)",
+  "message.foolsjourney.acting_clown_kill": "You mocked fate! (Digestion +2)",
+
+  "key.foolsjourney.flame_snap": "Flame Snap (Ability 1)",
+  "message.foolsjourney.ability_cooldown": "Ability is on cooldown!",
+  "message.foolsjourney.not_enough_spirituality": "Not enough spirituality!"
 }
