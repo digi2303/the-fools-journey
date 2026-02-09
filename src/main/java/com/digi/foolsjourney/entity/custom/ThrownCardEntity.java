@@ -54,13 +54,26 @@ public class ThrownCardEntity extends PersistentProjectileEntity implements Flyi
     @Override
     public void tick() {
         super.tick();
+
+        if (this.getWorld().isClient && !this.inGround && isClownOrStronger() && this.age > 2) {
+            Vec3d velocity = this.getVelocity();
+            double d = this.getX() - velocity.x * 0.5;
+            double e = this.getY() - velocity.y * 0.5;
+            double f = this.getZ() - velocity.z * 0.5;
+            if (this.random.nextFloat() < 0.3f) {
+                this.getWorld().addParticle(ParticleTypes.CRIT, d, e, f, 0, 0, 0);
+            }
+        }
+
         if (!this.inGround && this.age % 5 == 0 && this.getVelocity().lengthSquared() > 0.5) {
             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(),
                     SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, this.getSoundCategory(), 0.5F, 1.5F);
         }
+
         if (this.isOnFire() && this.getWorld().isClient) {
             this.getWorld().addParticle(ParticleTypes.FLAME, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
+
         if (this.age > 200) this.discard();
     }
 
@@ -104,11 +117,15 @@ public class ThrownCardEntity extends PersistentProjectileEntity implements Flyi
             }
 
             if (damaged) {
+                if (hitEntity instanceof LivingEntity livingHit) {
+                    livingHit.takeKnockback(0.3, this.getX() - hitEntity.getX(), this.getZ() - hitEntity.getZ());
+                }
 
                 if (this.piercedEntities < this.customPierceLevel) {
                     this.piercedEntities++;
+
+                    this.setVelocity(this.getVelocity().multiply(0.85));
                 } else {
-                    spawnItemAt(this.getPos());
                     this.discard();
                 }
             } else {

@@ -32,9 +32,9 @@ public class ThrowingCardItem extends Item {
             double damage = 2.0;
 
             if (user instanceof IBeyonder beyonder && beyonder.getSequence() != -1 && beyonder.getSequence() <= 8) {
-                speed = 8.0f;
+                speed = 3.5f;
 
-                divergence = 0.0f;
+                divergence = 0.1f;
 
                 damage = 8.0;
             }

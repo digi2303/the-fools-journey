@@ -17,7 +17,6 @@ import net.minecraft.util.Formatting;
 
 public class ModCommands {
 
-    // Komut önerileri (Tab tuşuna basınca çıkanlar)
     private static final SuggestionProvider<ServerCommandSource> SEQUENCE_SUGGESTIONS = (context, builder) -> {
         builder.suggest(9, Text.translatable("command.suggestion.foolsjourney.seer"));
         builder.suggest(8, Text.translatable("command.suggestion.foolsjourney.clown"));
@@ -26,17 +25,14 @@ public class ModCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("lotm")
-                .requires(source -> source.hasPermissionLevel(2)) // OP yetkisi (Seviye 2)
+                .requires(source -> source.hasPermissionLevel(2))
 
-                // --- STATUS KOMUTLARI ---
                 .then(CommandManager.literal("status")
                         .executes(ModCommands::runStatusSelf)
                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                 .executes(ModCommands::runStatusTarget)))
 
-                // --- SET KOMUTLARI ---
                 .then(CommandManager.literal("set")
-                        // Sequence Ayarlama
                         .then(CommandManager.literal("sequence")
                                 .then(CommandManager.argument("level", IntegerArgumentType.integer(0, 9))
                                         .suggests(SEQUENCE_SUGGESTIONS)
@@ -44,14 +40,12 @@ public class ModCommands {
                                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                                 .executes(ModCommands::runSetSequenceTarget))))
 
-                        // Digestion (Sindirme) Ayarlama
                         .then(CommandManager.literal("digestion")
                                 .then(CommandManager.argument("amount", DoubleArgumentType.doubleArg(0.0, 100.0))
                                         .executes(ModCommands::runSetDigestionSelf)
                                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                                 .executes(ModCommands::runSetDigestionTarget))))
 
-                        // Spirituality (Mana) Ayarlama
                         .then(CommandManager.literal("spirituality")
                                 .then(CommandManager.argument("amount", DoubleArgumentType.doubleArg(0.0))
                                         .executes(ModCommands::runSetSpiritualitySelf)
@@ -59,16 +53,12 @@ public class ModCommands {
                                                 .executes(ModCommands::runSetSpiritualityTarget))))
                 )
 
-                // --- RESET KOMUTLARI ---
                 .then(CommandManager.literal("reset")
                         .executes(ModCommands::runResetSelf)
                         .then(CommandManager.argument("target", EntityArgumentType.player())
                                 .executes(ModCommands::runResetTarget)))
         );
     }
-
-    // --- MANTIK METOTLARI (Logic Methods) ---
-
     private static int statusLogic(ServerCommandSource source, ServerPlayerEntity target) {
         if (target instanceof IBeyonder beyonder) {
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.status_header", target.getName().getString()).formatted(Formatting.GOLD), false);
@@ -89,16 +79,14 @@ public class ModCommands {
         if (target instanceof IBeyonder beyonder) {
             beyonder.setSequence(level);
 
-            // Sekansa göre manayı otomatik ayarla
             double maxSpirituality = 100.0;
             if (level <= 8) {
                 maxSpirituality = 200.0;
             }
 
             beyonder.setSpirituality(maxSpirituality);
-            beyonder.setDigestion(0.0); // Yeni sekansa geçince sindirme sıfırlanır
+            beyonder.setDigestion(0.0);
 
-            // Verileri senkronize et
             beyonder.syncBeyonderData();
 
             source.sendFeedback(() -> Text.translatable("commands.foolsjourney.set_sequence", target.getName().getString(), level).formatted(Formatting.GREEN), true);
@@ -140,9 +128,6 @@ public class ModCommands {
         }
         return 1;
     }
-
-    // --- ÇALIŞTIRMA METOTLARI (Runner Methods) ---
-
     private static int runStatusSelf(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return statusLogic(context.getSource(), context.getSource().getPlayerOrThrow());
     }
