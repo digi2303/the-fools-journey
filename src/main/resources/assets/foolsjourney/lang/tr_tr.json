@@ -68,5 +68,7 @@
   "death.attack.foolsjourney.loss_of_control": "%1$s kontrolden çıkarak deliliğe yenik düştü.",
 
   "item.foolsjourney.throwing_card": "Tarot Kartı",
-  "entity.foolsjourney.thrown_card": "Tarot Kartı"
+  "entity.foolsjourney.thrown_card": "Tarot Kartı",
+
+  "message.foolsjourney.paper_figurine_used": "Kağıt Kukla ile hasardan kaçınıldı!"
 }

@@ -3,7 +3,8 @@
 	"package": "com.digi.foolsjourney.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"BeyonderMixin"
+		"BeyonderMixin",
+		"PaperFigurineMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
