@@ -66,6 +66,7 @@
   "message.foolsjourney.loss_of_control_death": "YOU LOST CONTROL! The whispers turn into a scream and your body mutates...",
 
   "death.attack.foolsjourney.loss_of_control": "%1$s lost control and succumbed to madness.",
+  "death.attack.foolsjourney.loss_of_control.player": "%1$s lost control and succumbed to madness.",
 
   "item.foolsjourney.throwing_card": "Tarot Card",
   "entity.foolsjourney.thrown_card": "Tarot Card",

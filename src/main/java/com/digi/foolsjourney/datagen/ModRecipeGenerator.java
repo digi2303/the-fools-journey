@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder; // Bu importu eklemeyi unutma!
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
@@ -30,5 +31,12 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
                 .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
                 .criterion(hasItem(Items.GOLD_INGOT), conditionsFromItem(Items.GOLD_INGOT))
                 .offerTo(exporter, Identifier.of("foolsjourney", "spirit_pendulum"));
+
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.COMBAT, ModItems.THROWING_CARD, 4)
+                .input(Items.PAPER)
+                .input(Items.GOLD_NUGGET)
+                .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
+                .criterion(hasItem(Items.GOLD_NUGGET), conditionsFromItem(Items.GOLD_NUGGET))
+                .offerTo(exporter, Identifier.of("foolsjourney", "throwing_card"));
     }
 }

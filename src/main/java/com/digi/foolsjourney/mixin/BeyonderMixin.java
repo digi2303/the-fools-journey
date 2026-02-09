@@ -239,7 +239,7 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
         }
         else {
             StatusEffectInstance currentNv = this.getStatusEffect(StatusEffects.NIGHT_VISION);
-            if (currentNv != null && currentNv.getDuration() == -1) {
+            if (currentNv != null && currentNv.getDuration() == -1 && !currentNv.shouldShowParticles()) {
                 this.removeStatusEffect(StatusEffects.NIGHT_VISION);
             }
 

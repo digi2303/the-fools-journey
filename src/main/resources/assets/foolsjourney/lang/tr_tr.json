@@ -66,6 +66,7 @@
   "message.foolsjourney.loss_of_control_death": "KONTROLDEN ÇIKTIN! Fısıltılar bir çığlığa dönüşüyor ve bedenin mutasyona uğruyor...",
 
   "death.attack.foolsjourney.loss_of_control": "%1$s kontrolden çıkarak deliliğe yenik düştü.",
+  "death.attack.foolsjourney.loss_of_control.player": "%1$s kontrolden çıkarak deliliğe yenik düştü.",
 
   "item.foolsjourney.throwing_card": "Tarot Kartı",
   "entity.foolsjourney.thrown_card": "Tarot Kartı",
