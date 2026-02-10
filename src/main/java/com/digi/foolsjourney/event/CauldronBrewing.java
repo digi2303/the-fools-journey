@@ -39,6 +39,9 @@ public class CauldronBrewing {
                     ItemEntity roseBushEntity = null;
                     ItemEntity sugarEntity = null;
 
+                    ItemEntity enderPearlEntity = null;
+                    ItemEntity gunpowderEntity = null;
+
                     for (ItemEntity itemEntity : itemsInside) {
                         ItemStack stack = itemEntity.getStack();
 
@@ -46,8 +49,9 @@ public class CauldronBrewing {
                         else if (stack.isOf(Items.AMETHYST_SHARD)) amethystEntity = itemEntity;
                         else if (stack.isOf(Items.ROSE_BUSH)) roseBushEntity = itemEntity;
                         else if (stack.isOf(Items.SUGAR)) sugarEntity = itemEntity;
+                        else if (stack.isOf(Items.ENDER_PEARL)) enderPearlEntity = itemEntity;
+                        else if (stack.isOf(Items.GUNPOWDER)) gunpowderEntity = itemEntity;
                     }
-
                     if (glowInkEntity != null && amethystEntity != null) {
                         craftPotion(world, pos, player, heldItem, ModItems.SEER_POTION, glowInkEntity, amethystEntity);
                         return ActionResult.SUCCESS;
@@ -55,6 +59,11 @@ public class CauldronBrewing {
 
                     else if (roseBushEntity != null && sugarEntity != null) {
                         craftPotion(world, pos, player, heldItem, ModItems.CLOWN_POTION, roseBushEntity, sugarEntity);
+                        return ActionResult.SUCCESS;
+                    }
+
+                    else if (enderPearlEntity != null && gunpowderEntity != null) {
+                        craftPotion(world, pos, player, heldItem, ModItems.MAGICIAN_POTION, enderPearlEntity, gunpowderEntity);
                         return ActionResult.SUCCESS;
                     }
                 }

@@ -21,6 +21,7 @@ public class ModItemGroups {
                         entries.add(ModItems.SPIRIT_PENDULUM);
                         entries.add(ModItems.CLOWN_POTION);
                         entries.add(ModItems.THROWING_CARD);
+                        entries.add(ModItems.MAGICIAN_POTION);
                     })
                     .build());
 

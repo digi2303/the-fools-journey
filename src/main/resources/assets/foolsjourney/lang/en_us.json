@@ -71,5 +71,9 @@
   "item.foolsjourney.throwing_card": "Tarot Card",
   "entity.foolsjourney.thrown_card": "Tarot Card",
 
-  "message.foolsjourney.paper_figurine_used": "Damage evaded with Paper Figurine!"
+  "message.foolsjourney.paper_figurine_used": "Damage evaded with Paper Figurine!",
+
+  "item.foolsjourney.magician_potion": "Sequence 7: Magician Potion",
+  "message.foolsjourney.advance_magician": "You grasp the concept of substitution... The stage is yours! (Sequence 7: Magician)",
+  "command.suggestion.foolsjourney.magician": "Magician"
 }

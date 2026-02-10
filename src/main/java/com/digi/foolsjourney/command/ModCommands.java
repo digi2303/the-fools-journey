@@ -20,6 +20,7 @@ public class ModCommands {
     private static final SuggestionProvider<ServerCommandSource> SEQUENCE_SUGGESTIONS = (context, builder) -> {
         builder.suggest(9, Text.translatable("command.suggestion.foolsjourney.seer"));
         builder.suggest(8, Text.translatable("command.suggestion.foolsjourney.clown"));
+        builder.suggest(7, Text.translatable("command.suggestion.foolsjourney.magician"));
         return builder.buildFuture();
     };
 
@@ -80,7 +81,9 @@ public class ModCommands {
             beyonder.setSequence(level);
 
             double maxSpirituality = 100.0;
-            if (level <= 8) {
+            if (level == 7) {
+                maxSpirituality = 400.0;
+            } else if (level == 8) {
                 maxSpirituality = 200.0;
             }
 

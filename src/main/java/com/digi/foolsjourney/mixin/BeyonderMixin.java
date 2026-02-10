@@ -84,6 +84,9 @@ public abstract class BeyonderMixin extends LivingEntity implements IBeyonder {
 
     @Override
     public double getMaxSpirituality() {
+        if (this.foolsjourney$sequence == 7) {
+            return 400.0;
+        }
         if (this.foolsjourney$sequence != -1 && this.foolsjourney$sequence <= 8) {
             return 200.0;
         }

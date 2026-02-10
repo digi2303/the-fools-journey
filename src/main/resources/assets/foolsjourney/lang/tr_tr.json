@@ -71,5 +71,9 @@
   "item.foolsjourney.throwing_card": "Tarot Kartı",
   "entity.foolsjourney.thrown_card": "Tarot Kartı",
 
-  "message.foolsjourney.paper_figurine_used": "Kağıt Kukla ile hasardan kaçınıldı!"
+  "message.foolsjourney.paper_figurine_used": "Kağıt Kukla ile hasardan kaçınıldı!",
+
+  "item.foolsjourney.magician_potion": "Sekans 7: Sihirbaz İksiri",
+  "message.foolsjourney.advance_magician": "Yer değiştirme kavramını kavradın... Sahne senin! (Sekans 7: Sihirbaz)",
+  "command.suggestion.foolsjourney.magician": "Sihirbaz"
 }
