@@ -14,6 +14,8 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -60,15 +62,65 @@ public class ModMessages {
 
                     if (beyonder.getSequence() != -1 && beyonder.getSequence() <= 8) {
 
+                        if (beyonder.getCooldown() > 0) return;
+
                         if (player.isSubmergedInWater()) {
                             playExtinguishEffect(player, player.getEyePos().add(player.getRotationVec(1.0F).multiply(0.5)));
                             return;
                         }
 
-                        if (beyonder.getCooldown() > 0) return;
+                        if (player.isSneaking() && beyonder.getSequence() <= 7) {
+
+                            double jumpCost = 100.0;
+
+                            if (player.isCreative() || beyonder.getSpirituality() >= jumpCost) {
+                                double maxDistance = 15.0;
+                                Vec3d start = player.getEyePos();
+                                Vec3d look = player.getRotationVec(1.0F);
+                                Vec3d end = start.add(look.multiply(maxDistance));
+
+                                BlockHitResult hitResult = player.getWorld().raycast(new RaycastContext(
+                                        start, end,
+                                        RaycastContext.ShapeType.COLLIDER,
+                                        RaycastContext.FluidHandling.NONE,
+                                        player
+                                ));
+
+                                Vec3d targetPos = end;
+                                if (hitResult.getType() == HitResult.Type.BLOCK) {
+                                    targetPos = hitResult.getPos().subtract(look.multiply(0.5));
+                                }
+
+                                player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+                                        SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                                if (player.getWorld() instanceof ServerWorld serverWorld) {
+                                    serverWorld.spawnParticles(ParticleTypes.FLAME, player.getX(), player.getY() + 1, player.getZ(), 20, 0.5, 1, 0.5, 0.1);
+                                    serverWorld.spawnParticles(ParticleTypes.LARGE_SMOKE, player.getX(), player.getY() + 1, player.getZ(), 10, 0.5, 1, 0.5, 0.1);
+                                }
+
+                                player.requestTeleport(targetPos.x, targetPos.y, targetPos.z);
+
+                                player.getWorld().playSound(null, targetPos.x, targetPos.y, targetPos.z,
+                                        SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                                if (player.getWorld() instanceof ServerWorld serverWorld) {
+                                    serverWorld.spawnParticles(ParticleTypes.FLAME, targetPos.x, targetPos.y + 1, targetPos.z, 20, 0.5, 1, 0.5, 0.1);
+                                }
+
+                                if (!player.isCreative()) {
+                                    beyonder.setSpirituality(beyonder.getSpirituality() - jumpCost);
+                                    beyonder.setCooldown(40);
+                                    beyonder.syncBeyonderData();
+                                }
+
+                            } else {
+                                player.sendMessage(Text.translatable("message.foolsjourney.mana_drained").formatted(Formatting.RED), true);
+                            }
+
+                            return;
+                        }
 
                         double manaCost = 15.0;
-                        if (beyonder.getSpirituality() >= manaCost) {
+                        if (player.isCreative() || beyonder.getSpirituality() >= manaCost) {
 
                             double maxDistance = 20.0;
                             Vec3d startPos = player.getEyePos();
@@ -125,7 +177,11 @@ public class ModMessages {
                                     actionDone = true;
                                 }
                                 else {
-                                    BlockPos firePos = hitPos.up();
+                                    BlockPos firePos = hitPos;
+                                    if (!player.getWorld().getBlockState(hitPos).isReplaceable()) {
+                                        firePos = hitPos.up();
+                                    }
+
                                     if (player.getWorld().getBlockState(firePos).isReplaceable()) {
                                         player.getWorld().setBlockState(firePos, Blocks.FIRE.getDefaultState());
                                         if (player.getWorld() instanceof ServerWorld serverWorld) {
@@ -147,7 +203,9 @@ public class ModMessages {
                             }
 
                             if (actionDone) {
-                                beyonder.setSpirituality(beyonder.getSpirituality() - manaCost);
+                                if (!player.isCreative()) {
+                                    beyonder.setSpirituality(beyonder.getSpirituality() - manaCost);
+                                }
                                 player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0f, 1.2f);
                                 beyonder.setCooldown(20);
                                 beyonder.syncBeyonderData();

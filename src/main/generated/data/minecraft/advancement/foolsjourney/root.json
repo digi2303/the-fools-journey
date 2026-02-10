@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "consumed_seer_potion": {
+      "conditions": {
+        "item": {
+          "items": "foolsjourney:seer_potion"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "background": "minecraft:textures/block/deepslate_bricks.png",
+    "description": {
+      "translate": "advancement.foolsjourney.root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "foolsjourney:seer_potion"
+    },
+    "title": {
+      "translate": "advancement.foolsjourney.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "consumed_seer_potion"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

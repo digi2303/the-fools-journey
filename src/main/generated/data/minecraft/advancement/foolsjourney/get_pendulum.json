@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:foolsjourney/root",
+  "criteria": {
+    "has_pendulum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "foolsjourney:spirit_pendulum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.foolsjourney.pendulum.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "foolsjourney:spirit_pendulum"
+    },
+    "title": {
+      "translate": "advancement.foolsjourney.pendulum.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_pendulum"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
