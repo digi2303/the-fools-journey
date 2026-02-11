@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"BeyonderMixin",
-		"PaperFigurineMixin"
+		"PaperFigurineMixin",
+		"AirPipeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
