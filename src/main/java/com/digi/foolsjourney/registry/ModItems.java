@@ -24,7 +24,7 @@ public class ModItems {
             new MagicianPotionItem(new Item.Settings().maxCount(1)));
 
     public static final Item FACELESS_POTION = registerItem("faceless_potion",
-            new MagicianPotionItem(new Item.Settings().maxCount(1)));
+            new FacelessPotionItem(new Item.Settings().maxCount(1)));
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Identifier.of("foolsjourney", name), item);
