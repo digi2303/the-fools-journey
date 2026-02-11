@@ -34,7 +34,7 @@ public abstract class PaperFigurineMixin {
         if (source.isIn(net.minecraft.registry.tag.DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
 
         if (player instanceof IBeyonder beyonder) {
-            if (beyonder.getSequence() != -1 && beyonder.getSequence() <= 8) {
+            if (beyonder.getSequence() != -1 && beyonder.getSequence() <= 7) {
 
                 if (beyonder.getCooldown() > 0) return;
 

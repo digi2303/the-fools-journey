@@ -30,40 +30,26 @@ public class CauldronBrewing {
 
                     BlockPos pos = hitResult.getBlockPos();
                     Box cauldronBox = new Box(pos);
-
                     List<ItemEntity> itemsInside = world.getEntitiesByClass(ItemEntity.class, cauldronBox, entity -> true);
 
-                    ItemEntity glowInkEntity = null;
-                    ItemEntity amethystEntity = null;
-
-                    ItemEntity roseBushEntity = null;
-                    ItemEntity sugarEntity = null;
-
-                    ItemEntity enderPearlEntity = null;
-                    ItemEntity gunpowderEntity = null;
-
-                    for (ItemEntity itemEntity : itemsInside) {
-                        ItemStack stack = itemEntity.getStack();
-
-                        if (stack.isOf(Items.GLOW_INK_SAC)) glowInkEntity = itemEntity;
-                        else if (stack.isOf(Items.AMETHYST_SHARD)) amethystEntity = itemEntity;
-                        else if (stack.isOf(Items.ROSE_BUSH)) roseBushEntity = itemEntity;
-                        else if (stack.isOf(Items.SUGAR)) sugarEntity = itemEntity;
-                        else if (stack.isOf(Items.ENDER_PEARL)) enderPearlEntity = itemEntity;
-                        else if (stack.isOf(Items.GUNPOWDER)) gunpowderEntity = itemEntity;
-                    }
-                    if (glowInkEntity != null && amethystEntity != null) {
-                        craftPotion(world, pos, player, heldItem, ModItems.SEER_POTION, glowInkEntity, amethystEntity);
+                    if (hasItems(itemsInside, Items.GLOW_INK_SAC, Items.AMETHYST_SHARD)) {
+                        craftPotion(world, pos, player, heldItem, ModItems.SEER_POTION,
+                                findItem(itemsInside, Items.GLOW_INK_SAC),
+                                findItem(itemsInside, Items.AMETHYST_SHARD));
                         return ActionResult.SUCCESS;
                     }
 
-                    else if (roseBushEntity != null && sugarEntity != null) {
-                        craftPotion(world, pos, player, heldItem, ModItems.CLOWN_POTION, roseBushEntity, sugarEntity);
+                    else if (hasItems(itemsInside, Items.ROSE_BUSH, Items.SUGAR)) {
+                        craftPotion(world, pos, player, heldItem, ModItems.CLOWN_POTION,
+                                findItem(itemsInside, Items.ROSE_BUSH),
+                                findItem(itemsInside, Items.SUGAR));
                         return ActionResult.SUCCESS;
                     }
 
-                    else if (enderPearlEntity != null && gunpowderEntity != null) {
-                        craftPotion(world, pos, player, heldItem, ModItems.MAGICIAN_POTION, enderPearlEntity, gunpowderEntity);
+                    else if (hasItems(itemsInside, Items.ENDER_PEARL, Items.GUNPOWDER)) {
+                        craftPotion(world, pos, player, heldItem, ModItems.MAGICIAN_POTION,
+                                findItem(itemsInside, Items.ENDER_PEARL),
+                                findItem(itemsInside, Items.GUNPOWDER));
                         return ActionResult.SUCCESS;
                     }
                 }
@@ -73,8 +59,17 @@ public class CauldronBrewing {
         });
     }
 
-    private static void craftPotion(net.minecraft.world.World world, BlockPos pos, net.minecraft.entity.player.PlayerEntity player, ItemStack heldBottle, Item resultPotion, ItemEntity ingredient1, ItemEntity ingredient2) {
+    private static boolean hasItems(List<ItemEntity> list, Item item1, Item item2) {
+        return findItem(list, item1) != null && findItem(list, item2) != null;
+    }
+    private static ItemEntity findItem(List<ItemEntity> list, Item targetItem) {
+        for (ItemEntity entity : list) {
+            if (entity.getStack().isOf(targetItem)) return entity;
+        }
+        return null;
+    }
 
+    private static void craftPotion(net.minecraft.world.World world, BlockPos pos, net.minecraft.entity.player.PlayerEntity player, ItemStack heldBottle, Item resultPotion, ItemEntity ingredient1, ItemEntity ingredient2) {
         decrementItemEntity(ingredient1);
         decrementItemEntity(ingredient2);
 

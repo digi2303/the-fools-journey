@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -29,11 +28,19 @@ public class ModMessages {
 
     public static final Identifier FLAME_SNAP_ID = Identifier.of("foolsjourney", "flame_snap");
 
+    private static final double MANA_COST_FLAME_SNAP = 15.0;
+    private static final double MANA_COST_FLAMING_JUMP = 100.0;
+
+    private static final int COOLDOWN_FLAME_SNAP = 20;
+    private static final int COOLDOWN_FLAMING_JUMP = 40;
+
+    private static final double RANGE_FLAME_SNAP = 20.0;
+    private static final double RANGE_FLAMING_JUMP = 15.0;
+
     public record FlameSnapPayload() implements CustomPayload {
         public static final CustomPayload.Id<FlameSnapPayload> ID = new CustomPayload.Id<>(FLAME_SNAP_ID);
         public static final PacketCodec<RegistryByteBuf, FlameSnapPayload> CODEC = PacketCodec.unit(new FlameSnapPayload());
-        @Override
-        public CustomPayload.Id<? extends CustomPayload> getId() { return ID; }
+        @Override public CustomPayload.Id<? extends CustomPayload> getId() { return ID; }
     }
 
     public static void registerPayloads() {
@@ -49,6 +56,7 @@ public class ModMessages {
                     if (beyonder.getSequence() == -1) return;
                     if (beyonder.getCooldown() > 0) return;
                     if (!beyonder.isSpiritVisionActive() && beyonder.getSpirituality() < 1.0) return;
+
                     boolean newState = !beyonder.isSpiritVisionActive();
                     beyonder.setSpiritVision(newState);
                 }
@@ -71,19 +79,13 @@ public class ModMessages {
 
                         if (player.isSneaking() && beyonder.getSequence() <= 7) {
 
-                            double jumpCost = 100.0;
-
-                            if (player.isCreative() || beyonder.getSpirituality() >= jumpCost) {
-                                double maxDistance = 15.0;
+                            if (player.isCreative() || beyonder.getSpirituality() >= MANA_COST_FLAMING_JUMP) {
                                 Vec3d start = player.getEyePos();
                                 Vec3d look = player.getRotationVec(1.0F);
-                                Vec3d end = start.add(look.multiply(maxDistance));
+                                Vec3d end = start.add(look.multiply(RANGE_FLAMING_JUMP));
 
                                 BlockHitResult hitResult = player.getWorld().raycast(new RaycastContext(
-                                        start, end,
-                                        RaycastContext.ShapeType.COLLIDER,
-                                        RaycastContext.FluidHandling.NONE,
-                                        player
+                                        start, end, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player
                                 ));
 
                                 Vec3d targetPos = end;
@@ -107,34 +109,27 @@ public class ModMessages {
                                 }
 
                                 if (!player.isCreative()) {
-                                    beyonder.setSpirituality(beyonder.getSpirituality() - jumpCost);
-                                    beyonder.setCooldown(40);
+                                    beyonder.setSpirituality(beyonder.getSpirituality() - MANA_COST_FLAMING_JUMP);
+                                    beyonder.setCooldown(COOLDOWN_FLAMING_JUMP);
                                     beyonder.syncBeyonderData();
                                 }
 
                             } else {
                                 player.sendMessage(Text.translatable("message.foolsjourney.mana_drained").formatted(Formatting.RED), true);
                             }
-
                             return;
                         }
 
-                        double manaCost = 15.0;
-                        if (player.isCreative() || beyonder.getSpirituality() >= manaCost) {
+                        if (player.isCreative() || beyonder.getSpirituality() >= MANA_COST_FLAME_SNAP) {
 
-                            double maxDistance = 20.0;
                             Vec3d startPos = player.getEyePos();
                             Vec3d lookVec = player.getRotationVec(1.0F);
-                            Vec3d endPos = startPos.add(lookVec.multiply(maxDistance));
+                            Vec3d endPos = startPos.add(lookVec.multiply(RANGE_FLAME_SNAP));
 
                             BlockHitResult blockHitResult = player.getWorld().raycast(new RaycastContext(
-                                    startPos,
-                                    endPos,
-                                    RaycastContext.ShapeType.OUTLINE,
-                                    RaycastContext.FluidHandling.SOURCE_ONLY,
-                                    player));
+                                    startPos, endPos, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.SOURCE_ONLY, player));
 
-                            double effectiveDistance = maxDistance;
+                            double effectiveDistance = RANGE_FLAME_SNAP;
                             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                                 effectiveDistance = startPos.distanceTo(blockHitResult.getPos());
                             }
@@ -149,7 +144,6 @@ public class ModMessages {
                             );
 
                             boolean targetIsEntity = (entityHitResult != null);
-                            boolean targetIsBlock = (blockHitResult.getType() == HitResult.Type.BLOCK);
                             boolean actionDone = false;
 
                             if (player.getWorld() instanceof ServerWorld serverWorld) {
@@ -159,41 +153,31 @@ public class ModMessages {
                             }
 
                             if (targetIsEntity) {
-                                if (entityHitResult.getEntity().isInsideWaterOrBubbleColumn()) {
-                                    playExtinguishEffect(player, entityHitResult.getPos());
+                                SmallFireballEntity fireball = new SmallFireballEntity(player.getWorld(), player, lookVec);
+                                fireball.setPosition(player.getX() + lookVec.x * 0.5, player.getEyeY(), player.getZ() + lookVec.z * 0.5);
+                                player.getWorld().spawnEntity(fireball);
+                                if (beyonder.getDigestion() < 100.0) beyonder.addDigestion(0.5);
+                                actionDone = true;
+                            }
+                            else if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+                                BlockPos hitPos = blockHitResult.getBlockPos();
+                                BlockPos firePos = hitPos;
+
+                                if (!player.getWorld().getBlockState(hitPos).isReplaceable()) {
+                                    firePos = hitPos.up();
+                                }
+
+                                if (player.getWorld().getBlockState(firePos).isReplaceable()) {
+                                    player.getWorld().setBlockState(firePos, Blocks.FIRE.getDefaultState());
+                                    if (player.getWorld() instanceof ServerWorld serverWorld) {
+                                        serverWorld.spawnParticles(ParticleTypes.FLAME, firePos.getX() + 0.5, firePos.getY() + 0.5, firePos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
+                                    }
                                 } else {
                                     SmallFireballEntity fireball = new SmallFireballEntity(player.getWorld(), player, lookVec);
                                     fireball.setPosition(player.getX() + lookVec.x * 0.5, player.getEyeY(), player.getZ() + lookVec.z * 0.5);
                                     player.getWorld().spawnEntity(fireball);
-                                    if (beyonder.getDigestion() < 100.0) beyonder.addDigestion(0.5);
                                 }
                                 actionDone = true;
-                            }
-                            else if (targetIsBlock) {
-                                BlockPos hitPos = blockHitResult.getBlockPos();
-
-                                if (!player.getWorld().getFluidState(hitPos).isEmpty()) {
-                                    playExtinguishEffect(player, new Vec3d(hitPos.getX() + 0.5, hitPos.getY() + 1, hitPos.getZ() + 0.5));
-                                    actionDone = true;
-                                }
-                                else {
-                                    BlockPos firePos = hitPos;
-                                    if (!player.getWorld().getBlockState(hitPos).isReplaceable()) {
-                                        firePos = hitPos.up();
-                                    }
-
-                                    if (player.getWorld().getBlockState(firePos).isReplaceable()) {
-                                        player.getWorld().setBlockState(firePos, Blocks.FIRE.getDefaultState());
-                                        if (player.getWorld() instanceof ServerWorld serverWorld) {
-                                            serverWorld.spawnParticles(ParticleTypes.FLAME, firePos.getX() + 0.5, firePos.getY() + 0.5, firePos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
-                                        }
-                                    } else {
-                                        SmallFireballEntity fireball = new SmallFireballEntity(player.getWorld(), player, lookVec);
-                                        fireball.setPosition(player.getX() + lookVec.x * 0.5, player.getEyeY(), player.getZ() + lookVec.z * 0.5);
-                                        player.getWorld().spawnEntity(fireball);
-                                    }
-                                    actionDone = true;
-                                }
                             }
                             else {
                                 SmallFireballEntity fireball = new SmallFireballEntity(player.getWorld(), player, lookVec);
@@ -204,10 +188,10 @@ public class ModMessages {
 
                             if (actionDone) {
                                 if (!player.isCreative()) {
-                                    beyonder.setSpirituality(beyonder.getSpirituality() - manaCost);
+                                    beyonder.setSpirituality(beyonder.getSpirituality() - MANA_COST_FLAME_SNAP);
                                 }
                                 player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0f, 1.2f);
-                                beyonder.setCooldown(20);
+                                beyonder.setCooldown(COOLDOWN_FLAME_SNAP);
                                 beyonder.syncBeyonderData();
                             }
                         }
