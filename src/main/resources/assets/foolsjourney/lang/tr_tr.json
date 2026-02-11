@@ -75,5 +75,7 @@
 
   "item.foolsjourney.magician_potion": "Sekans 7: Sihirbaz İksiri",
   "message.foolsjourney.advance_magician": "Yer değiştirme kavramını kavradın... Sahne senin! (Sekans 7: Sihirbaz)",
-  "command.suggestion.foolsjourney.magician": "Sihirbaz"
+  "command.suggestion.foolsjourney.magician": "Sihirbaz",
+
+  "key.foolsjourney.air_bullet": "Hava Mermisi"
 }

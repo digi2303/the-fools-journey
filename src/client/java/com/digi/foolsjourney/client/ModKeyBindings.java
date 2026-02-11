@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 public class ModKeyBindings {
     public static KeyBinding SPIRIT_VISION_KEY;
     public static KeyBinding FLAME_SNAP_KEY;
+    public static KeyBinding AIR_BULLET_KEY;
 
     public static void register() {
         SPIRIT_VISION_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -28,6 +29,13 @@ public class ModKeyBindings {
                 "category.foolsjourney.lotm"
         ));
 
+        AIR_BULLET_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.foolsjourney.air_bullet",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_G,
+                "category.foolsjourney.lotm"
+        ));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (SPIRIT_VISION_KEY.wasPressed()) {
                 if (ClientPlayNetworking.canSend(SpiritVisionPayload.ID)) {
@@ -38,6 +46,12 @@ public class ModKeyBindings {
             while (FLAME_SNAP_KEY.wasPressed()) {
                 if (ClientPlayNetworking.canSend(ModMessages.FlameSnapPayload.ID)) {
                     ClientPlayNetworking.send(new ModMessages.FlameSnapPayload());
+                }
+            }
+
+            while (AIR_BULLET_KEY.wasPressed()) {
+                if (ClientPlayNetworking.canSend(ModMessages.AirBulletPayload.ID)) {
+                    ClientPlayNetworking.send(new ModMessages.AirBulletPayload());
                 }
             }
         });
