@@ -22,6 +22,7 @@ public class ModItemGroups {
                         entries.add(ModItems.CLOWN_POTION);
                         entries.add(ModItems.THROWING_CARD);
                         entries.add(ModItems.MAGICIAN_POTION);
+                        entries.add(ModItems.FACELESS_POTION);
                     })
                     .build());
 

@@ -77,5 +77,9 @@
   "message.foolsjourney.advance_magician": "You grasp the concept of substitution... The stage is yours! (Sequence 7: Magician)",
   "command.suggestion.foolsjourney.magician": "Magician",
 
-  "key.foolsjourney.air_bullet": "Air Bullet"
+  "key.foolsjourney.air_bullet": "Air Bullet",
+
+  "item.foolsjourney.faceless_potion": "Sequence 6: Faceless Potion",
+  "message.foolsjourney.advance_faceless": "Your face blurs and shifts... You are now a Faceless.",
+  "command.suggestion.foolsjourney.faceless": "Faceless"
 }

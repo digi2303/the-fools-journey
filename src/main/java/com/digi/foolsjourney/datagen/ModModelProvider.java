@@ -23,5 +23,6 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.SPIRIT_PENDULUM, Models.GENERATED);
         itemModelGenerator.register(ModItems.THROWING_CARD, Models.GENERATED);
         itemModelGenerator.register(ModItems.MAGICIAN_POTION, Models.GENERATED);
+        itemModelGenerator.register(ModItems.FACELESS_POTION, Models.GENERATED);
     }
 }

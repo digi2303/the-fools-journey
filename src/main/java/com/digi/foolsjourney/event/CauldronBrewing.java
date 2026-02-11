@@ -52,6 +52,13 @@ public class CauldronBrewing {
                                 findItem(itemsInside, Items.GUNPOWDER));
                         return ActionResult.SUCCESS;
                     }
+
+                    else if (hasItems(itemsInside, Items.LEATHER, Items.SLIME_BALL)) {
+                        craftPotion(world, pos, player, heldItem, ModItems.FACELESS_POTION,
+                                findItem(itemsInside, Items.LEATHER),
+                                findItem(itemsInside, Items.SLIME_BALL));
+                        return ActionResult.SUCCESS;
+                    }
                 }
             }
 
@@ -62,6 +69,7 @@ public class CauldronBrewing {
     private static boolean hasItems(List<ItemEntity> list, Item item1, Item item2) {
         return findItem(list, item1) != null && findItem(list, item2) != null;
     }
+
     private static ItemEntity findItem(List<ItemEntity> list, Item targetItem) {
         for (ItemEntity entity : list) {
             if (entity.getStack().isOf(targetItem)) return entity;
